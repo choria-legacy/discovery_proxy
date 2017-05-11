@@ -1,0 +1,26 @@
+[
+  {
+    "certname": "dev1.devco.net",
+    "deactivated": null
+  },
+  {
+    "certname": "dev4.devco.net",
+    "deactivated": null
+  },
+  {
+    "certname": "dev3.devco.net",
+    "deactivated": null
+  },
+  {
+    "certname": "dev2.devco.net",
+    "deactivated": null
+  },
+  {
+    "certname": "dev5.devco.net",
+    "deactivated": null
+  },
+  {
+    "certname": "old.devco.net",
+    "deactivated": "2017-01-29T15:25:51.797Z"
+  }
+]
