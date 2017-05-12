@@ -1,7 +1,6 @@
 package main
 
 import (
-	"expvar"
 	"fmt"
 	"net/http"
 	"os"
@@ -13,7 +12,7 @@ import (
 
 const Version = "0.0.1"
 
-var config = discovery.Config{Stats: expvar.NewMap("pdbproxy")}
+var config = discovery.Config{}
 
 func main() {
 	if err := configure(); err != nil {
@@ -27,8 +26,7 @@ func main() {
 }
 
 func serve() error {
-	http.Handle("/choria/stats", expvar.Handler())
-	http.HandleFunc("/choria/v1/discover/mcollective", discovery.MCollectiveDiscover)
+	http.HandleFunc("/v1/discover", discovery.MCollectiveDiscover)
 
 	log.Infof("Starting pdbproxy version %s listener on %s:%d", Version, config.Listen, config.Port)
 

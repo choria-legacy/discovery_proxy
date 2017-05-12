@@ -1,0 +1,137 @@
+swagger: '2.0'
+info:
+  title: Choria Discovery API
+  description: API to do Choria Discovery via REST services
+  version: 1.0.0
+basePath: /v1
+produces:
+  - application/json
+paths:
+  /discover:
+    post:
+      summary: Perform a discovery request
+      parameters:
+        - name: request
+          in: body
+          description: Filter description
+          required: true
+          schema:
+            $ref: '#/definitions/discoveryRequest'
+      responses:
+        '200':
+          $ref: '#/responses/success'
+        '400':
+          $ref: '#/responses/error'
+responses:
+  error:
+    description: Standard Error Format
+    schema:
+      $ref: '#/definitions/errorModel'
+  success:
+    description: Basic successful request
+    schema:
+      $ref: '#/definitions/successModel'
+definitions:
+  successModel:
+    type: object
+    properties:
+      status:
+        type: string
+        description: HTTP Status Code
+      nodes:
+        type: array
+        items:
+          type: string
+          minLength: 1
+  errorModel:
+    type: object
+    properties:
+      status:
+        type: string
+        description: HTTP Status Code
+      message:
+        type: string
+        description: Short description of the problem
+      detail:
+        type: string
+        description: Extra details about the error
+
+  collectiveFilter:
+    $ref: "#/definitions/word"
+  word:
+    type: string
+    minLength: 1
+    pattern: '^[a-zA-Z0-9_\-\.]+$'
+  wordOrRegex:
+    type: string
+    minLength: 1
+    pattern: '^((\\/[a-zA-Z0-9\\.\\-_]+\/)|([a-zA-Z][a-zA-Z0-9\\.\\-_]+))$'
+  factFilter:
+    type: object
+    required:
+      - fact
+      - operator
+      - value
+    properties:
+      fact:
+        $ref: '#/definitions/word'
+      operator:
+        type: string
+        enum:
+          - "=="
+          - "=~"
+          - "!="
+          - ">="
+          - ">"
+          - "<="
+          - "<"
+      value:
+        $ref: '#/definitions/wordOrRegex'
+  factsFilter:
+    type: array
+    items:
+      $ref: '#/definitions/factFilter'
+  identitiesFilter:
+    type: array
+    items:
+      $ref: '#/definitions/wordOrRegex'
+  agentsFilter:
+    type: array
+    items:
+      $ref: '#/definitions/wordOrRegex'
+  classesFilter:
+    type: array
+    items:
+      $ref: '#/definitions/wordOrRegex'
+  discoveryRequest:
+    type: object
+    required:
+      - facts
+      - classes
+      - agents
+      - identities
+    properties:
+      facts:
+        type: array
+        items:
+          $ref: '#/definitions/factsFilter'
+      classes:
+        type: array
+        items:
+          $ref: '#/definitions/classesFilter'
+      agents:
+        type: array
+        items:
+          $ref: '#/definitions/agentsFilter'
+      identities:
+        type: array
+        items:
+          $ref: '#/definitions/identitiesFilter'
+      collective:
+        $ref: '#/definitions/collectiveFilter'
+      query:
+        description: PQL Query
+        type: string
+        minLength: 1
+      node_set:
+        $ref: '#/definitions/word'  

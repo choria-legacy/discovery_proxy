@@ -3,7 +3,6 @@ package discovery
 import (
 	"encoding/json"
 	"errors"
-	"expvar"
 	"io"
 	"net/http"
 
@@ -20,7 +19,6 @@ type Config struct {
 	Certificate  string
 	PrivateKey   string
 	Ca           string
-	Stats        *expvar.Map
 }
 
 type factFilter struct {
@@ -36,17 +34,17 @@ type mcoFilter struct {
 	Identities []string     `json:"identities"`
 	Collective string       `json: "collective"`
 	Query      string       `json: "query"`
+	NodeSet    string       `json:"node_set"`
 }
 
 var config Config
+var logger log.Entry
 
 func SetConfig(c Config) {
 	config = c
 }
 
 func MCollectiveDiscover(response http.ResponseWriter, request *http.Request) {
-	config.Stats.Add("requests", 1)
-
 	logger := log.WithField("remote", request.RemoteAddr)
 
 	logger.Infof("serving request")
@@ -82,6 +80,7 @@ func newRequest(query io.Reader) (mcoFilter, error) {
 	req.Identities = []string{}
 	req.Collective = ""
 	req.Query = ""
+	req.NodeSet = ""
 
 	if err := json.NewDecoder(query).Decode(&req); err != nil {
 		return req, errors.New("Could not decode JSON request: " + err.Error())
