@@ -34,25 +34,6 @@ Optional flags:
       --logfile=LOGFILE         File to log to, STDOUT when not set
 ```
 
-## Request Format
+## API Format
 
-MCollective will submit to the service a JSON document with the following structure, all fields are optional, a empty
-hash will discover all nodes:
-
-```json
-{
-	"facts": [
-		{ "fact": "country", "operator": "==", "value": "mt" }
-	],
-	"classes": ["docker", "/registrator/"],
-	"agents": ["rpcutil", "weather"],
-	"identities": ["example.com", "/another/"],
-	"collective": "mt_collective"
-}
-```
-
-## TODO
-
- - [ ] Listen for clients using HTTPS
- - [ ] Listen on the middleware to facilitate easy scaling and avoid opening listen ports
- - [ ] Export stats using `expvar`
+The API is defined in a Swagger API found in `schema.yaml` and can be previewed on the [Swagger UI](petstore.swagger.io/?url=https://raw.githubusercontent.com/choria-io/pdbproxy/master/schema.yaml).
