@@ -42,12 +42,11 @@ definitions:
         type: array
         items:
           type: string
-          minLength: 1
   errorModel:
     type: object
     properties:
       status:
-        type: string
+        type: integer
         description: HTTP Status Code
       message:
         type: string
@@ -134,4 +133,4 @@ definitions:
         type: string
         minLength: 1
       node_set:
-        $ref: '#/definitions/word'  
+        $ref: '#/definitions/word'

@@ -37,11 +37,30 @@ type mcoFilter struct {
 	NodeSet    string       `json:"node_set"`
 }
 
+type errorModel struct {
+	Status  int    `json:"status"`
+	Message string `json:"message"`
+	Detail  string `json:"detail"`
+}
+
+type successModel struct {
+	Status int      `json:"status"`
+	Nodes  []string `json:"nodes"`
+}
+
 var config Config
 var logger log.Entry
 
 func SetConfig(c Config) {
 	config = c
+}
+
+func failRequest(status int, message string, detail string, response http.ResponseWriter) {
+	err := errorModel{status, message, detail}
+
+	response.WriteHeader(err.Status)
+	data, _ := json.Marshal(err)
+	response.Write([]byte(data))
 }
 
 func MCollectiveDiscover(response http.ResponseWriter, request *http.Request) {
@@ -51,24 +70,20 @@ func MCollectiveDiscover(response http.ResponseWriter, request *http.Request) {
 
 	req, err := newRequest(request.Body)
 	if err != nil {
-		response.WriteHeader(http.StatusBadRequest)
-		response.Write([]byte("Could not parse incoming request data: " + err.Error()))
+		failRequest(http.StatusBadRequest, "Could not parse incoming request data: "+err.Error(), err.Error(), response)
 		return
 	}
 
 	provider := PuppetDB{Log: logger}
 
 	if discovered, err := provider.Discover(req); err == nil {
-		if data, err := json.Marshal(discovered); err == nil {
+		if data, err := json.Marshal(successModel{Status: 200, Nodes: discovered}); err == nil {
 			response.Write(data)
 		} else {
-			response.WriteHeader(http.StatusBadRequest)
-			response.Write([]byte("failed to json encode results: " + err.Error()))
+			failRequest(http.StatusBadRequest, "Failed to json encode results: "+err.Error(), err.Error(), response)
 		}
 	} else {
-		response.WriteHeader(http.StatusBadRequest)
-		response.Write([]byte("Discovery failed: " + err.Error()))
-		return
+		failRequest(http.StatusBadRequest, "Discovery failed: "+err.Error(), err.Error(), response)
 	}
 }
 

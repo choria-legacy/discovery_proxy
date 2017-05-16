@@ -36,4 +36,4 @@ Optional flags:
 
 ## API Format
 
-The API is defined in a Swagger API found in `schema.yaml` and can be previewed on the [Swagger UI](petstore.swagger.io/?url=https://raw.githubusercontent.com/choria-io/pdbproxy/master/schema.yaml).
+The API is defined in a Swagger API found in `schema.yaml` and can be previewed on the [Swagger UI](http://petstore.swagger.io/?url=https://raw.githubusercontent.com/choria-io/pdbproxy/master/schema.yaml).
