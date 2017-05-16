@@ -165,7 +165,7 @@ func (p PuppetDB) discoverClasses(classes []string) string {
 	for _, class := range classes {
 		if re.MatchString(class) {
 			matches := re.FindStringSubmatch(class)
-			queries = append(queries, fmt.Sprintf(`resources {type = "Class" and title ~ "%s"}`, matches[1]))
+			queries = append(queries, fmt.Sprintf(`resources {type = "Class" and title ~ "%s"}`, p.stringRegexi(matches[1])))
 		} else {
 			queries = append(queries, fmt.Sprintf(`resources {type = "Class" and title = "%s"}`, p.capitalizeResource(class)))
 		}
