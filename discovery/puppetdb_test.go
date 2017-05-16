@@ -30,7 +30,7 @@ func TestDiscoverCollective(t *testing.T) {
 
 func TestDiscoverClasses(t *testing.T) {
 	pql := provider.discoverClasses([]string{"klass", "/regex/"})
-	expected := `resources {type = "Class" and title = "Klass"} and resources {type = "Class" and title ~ "regex"}`
+	expected := `resources {type = "Class" and title = "Klass"} and resources {type = "Class" and title ~ "[Rr][Ee][Gg][Ee][Xx]"}`
 
 	assert.Equal(t, expected, pql, "should be equal")
 }
