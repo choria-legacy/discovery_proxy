@@ -26,11 +26,13 @@ type puppetDbResult struct {
 	Deactivated *string `json:"deactivated"`
 }
 
-// Performs discovery against PuppetDB
+// Discover nodes against PuppetDB
 func (p PuppetDB) Discover(request mcoFilter) ([]string, error) {
-	p.Log.Debugf("Query: %s", p.parseMCollectiveQuery(request))
+	query := p.parseMCollectiveQuery(request)
 
-	if result, err := p.queryPuppetdb(url.QueryEscape(p.parseMCollectiveQuery(request))); err == nil {
+	p.Log.Debugf("Query: %s", query)
+
+	if result, err := p.queryPuppetdb(url.QueryEscape(query)); err == nil {
 		if discovered, err := p.extractCertnames(result); err == nil {
 			p.Log.Debugf("Discovered %d nodes", len(discovered))
 
@@ -126,7 +128,7 @@ func (p PuppetDB) stringRegexi(needle string) string {
 		derived = needle
 	}
 
-	for idx, _ := range derived {
+	for idx := range derived {
 		if regexp.MustCompile(`[[:alpha:]]`).MatchString(string(derived[idx])) {
 			buffer.WriteString(fmt.Sprintf(`[%s%s]`, strings.ToUpper(string(derived[idx])), strings.ToLower(string(derived[idx]))))
 		} else {
@@ -173,9 +175,9 @@ func (p PuppetDB) discoverClasses(classes []string) string {
 
 	if len(queries) > 0 {
 		return strings.Join(queries, " and ")
-	} else {
-		return ""
 	}
+
+	return ""
 }
 
 // Create a PQL query string to find nodes with certain agents
@@ -197,9 +199,9 @@ func (p PuppetDB) discoverAgents(agents []string) string {
 
 	if len(queries) > 0 {
 		return strings.Join(queries, " and ")
-	} else {
-		return ""
 	}
+
+	return ""
 }
 
 // Create a PQL query string to find nodes with certain certnames
@@ -229,9 +231,9 @@ func (p PuppetDB) discoverIdentities(identities []string) string {
 
 	if len(queries) > 0 {
 		return strings.Join(queries, " or ")
-	} else {
-		return ""
 	}
+
+	return ""
 }
 
 // Creates a PQL querty string to find facts with MCollective operators supported and mapped
@@ -257,9 +259,9 @@ func (p PuppetDB) discoverFacts(facts []factFilter) string {
 
 	if len(queries) > 0 {
 		return strings.Join(queries, " and ")
-	} else {
-		return ""
 	}
+
+	return ""
 }
 
 // Extract all active certnames from quety results
@@ -283,6 +285,10 @@ func (p PuppetDB) extractCertnames(discovered []byte) ([]string, error) {
 
 // Parse the incoming MCollective discovery request and turns it into a PQL query
 func (p PuppetDB) parseMCollectiveQuery(query mcoFilter) string {
+	if query.Query != "" {
+		return (query.Query)
+	}
+
 	var queries []string
 
 	if query.Collective != "" {
