@@ -1,6 +1,7 @@
 package discovery
 
 import (
+	"bytes"
 	"encoding/json"
 	"errors"
 	"io"
@@ -22,9 +23,9 @@ type Config struct {
 }
 
 type factFilter struct {
-	Fact     string `json: "fact"`
-	Operator string `json: "operator"`
-	Value    string `json: "value"`
+	Fact     string `json:"fact"`
+	Operator string `json:"operator"`
+	Value    string `json:"value"`
 }
 
 type mcoFilter struct {
@@ -32,8 +33,8 @@ type mcoFilter struct {
 	Classes    []string     `json:"classes"`
 	Agents     []string     `json:"agents"`
 	Identities []string     `json:"identities"`
-	Collective string       `json: "collective"`
-	Query      string       `json: "query"`
+	Collective string       `json:"collective"`
+	Query      string       `json:"query"`
 	NodeSet    string       `json:"node_set"`
 }
 
@@ -89,15 +90,10 @@ func MCollectiveDiscover(response http.ResponseWriter, request *http.Request) {
 
 func newRequest(query io.Reader) (mcoFilter, error) {
 	req := mcoFilter{}
-	req.Facts = []factFilter{}
-	req.Classes = []string{}
-	req.Agents = []string{}
-	req.Identities = []string{}
-	req.Collective = ""
-	req.Query = ""
-	req.NodeSet = ""
+	buf := new(bytes.Buffer)
+	buf.ReadFrom(query)
 
-	if err := json.NewDecoder(query).Decode(&req); err != nil {
+	if err := json.Unmarshal(buf.Bytes(), &req); err != nil {
 		return req, errors.New("Could not decode JSON request: " + err.Error())
 	}
 
