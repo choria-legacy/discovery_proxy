@@ -34,6 +34,7 @@ responses:
 definitions:
   successModel:
     type: object
+    additionalProperties: false
     properties:
       status:
         type: string
@@ -44,6 +45,7 @@ definitions:
           type: string
   errorModel:
     type: object
+    additionalProperties: false
     properties:
       status:
         type: integer
@@ -67,6 +69,7 @@ definitions:
     pattern: '^((\\/[a-zA-Z0-9\\.\\-_]+\/)|([a-zA-Z][a-zA-Z0-9\\.\\-_]+))$'
   factFilter:
     type: object
+    additionalProperties: false
     required:
       - fact
       - operator
@@ -104,28 +107,16 @@ definitions:
       $ref: '#/definitions/wordOrRegex'
   discoveryRequest:
     type: object
-    required:
-      - facts
-      - classes
-      - agents
-      - identities
+    additionalProperties: false
     properties:
       facts:
-        type: array
-        items:
-          $ref: '#/definitions/factsFilter'
+        $ref: '#/definitions/factsFilter'
       classes:
-        type: array
-        items:
-          $ref: '#/definitions/classesFilter'
+        $ref: '#/definitions/classesFilter'
       agents:
-        type: array
-        items:
-          $ref: '#/definitions/agentsFilter'
+        $ref: '#/definitions/agentsFilter'
       identities:
-        type: array
-        items:
-          $ref: '#/definitions/identitiesFilter'
+        $ref: '#/definitions/identitiesFilter'
       collective:
         $ref: '#/definitions/collectiveFilter'
       query:
