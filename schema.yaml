@@ -4,12 +4,18 @@ info:
   description: API to do Choria Discovery via REST services
   version: 1.0.0
 basePath: /v1
+schemes:
+  - https
 produces:
   - application/json
 paths:
   /discover:
-    post:
+    get:
       summary: Perform a discovery request
+      produces:
+        -   application/json
+      consumes:
+        -   application/json
       parameters:
         - name: request
           in: body
@@ -19,25 +25,94 @@ paths:
             $ref: '#/definitions/discoveryRequest'
       responses:
         '200':
-          $ref: '#/responses/success'
+          $ref: '#/responses/nodes'
         '400':
           $ref: '#/responses/error'
+  /set/{set}:
+    get:
+      summary: Retrieves the query or nodes for a set
+      produces:
+        -  application/json
+      parameters:
+        - name: set
+          in: path
+          description: Node set to retrieve
+          required: true
+          type: string
+        - name: discover
+          in: query
+          description: Also include the matching nodes if the set is a PQL query
+          type: boolean
+          default: false
+      responses:
+        "200":
+          $ref: '#/responses/set'
+        '400':
+          $ref: '#/responses/error'
+        '404':
+          description: "Not found"
+
+    delete:
+      summary: Deletes a set
+      produces:
+        -   application/json
+      parameters:
+        - name: set
+          in: path
+          description: Node set to retrieve
+          required: true
+          type: string
+      responses:
+        200:
+          $ref: '#/responses/set'
+        404:
+          description: "Not found"
+
+  /set:
+    post:
+      summary: Create or Update the query or nodes for a set
+      produces:
+        -   application/json
+      consumes:
+        -   application/json
+      parameters:
+        - name: set
+          in: body
+          description: Node set to store
+          required: true
+          schema:
+            $ref: '#/definitions/set'
+      responses:
+        "200":
+          $ref: '#/responses/set'
+        '400':
+          $ref: '#/responses/error'
+
+
 responses:
   error:
     description: Standard Error Format
     schema:
       $ref: '#/definitions/errorModel'
+  nodes:
+    description: Basic successful discovery request
+    schema:
+      $ref: '#/definitions/discoverySuccessModel'
+  set:
+    description: Node Set
+    schema:
+      $ref: '#/definitions/set'
   success:
     description: Basic successful request
     schema:
       $ref: '#/definitions/successModel'
 definitions:
-  successModel:
+  discoverySuccessModel:
     type: object
     additionalProperties: false
     properties:
       status:
-        type: string
+        type: integer
         description: HTTP Status Code
       nodes:
         type: array
@@ -56,6 +131,30 @@ definitions:
       detail:
         type: string
         description: Extra details about the error
+  successModel:
+    type: object
+    properties:
+      status:
+        type: integer
+        description: HTTP Status Code
+      detail:
+        type: string
+
+  set:
+    type: object
+    required:
+      - set
+      - query
+    properties:
+      set:
+        $ref: '#/definitions/word'
+      query:
+        type: string
+        minLength: 1
+      nodes:
+        type: array
+        items:
+          type: string
 
   collectiveFilter:
     $ref: "#/definitions/word"
@@ -69,7 +168,6 @@ definitions:
     pattern: '^((\\/[a-zA-Z0-9\\.\\-_]+\/)|([a-zA-Z][a-zA-Z0-9\\.\\-_]+))$'
   factFilter:
     type: object
-    additionalProperties: false
     required:
       - fact
       - operator
@@ -107,7 +205,6 @@ definitions:
       $ref: '#/definitions/wordOrRegex'
   discoveryRequest:
     type: object
-    additionalProperties: false
     properties:
       facts:
         $ref: '#/definitions/factsFilter'
@@ -125,3 +222,4 @@ definitions:
         minLength: 1
       node_set:
         $ref: '#/definitions/word'
+
