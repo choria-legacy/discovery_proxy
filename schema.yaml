@@ -64,7 +64,7 @@ paths:
           type: string
       responses:
         200:
-          $ref: '#/responses/set'
+          $ref: '#/responses/success'
         404:
           description: "Not found"
 
@@ -84,7 +84,7 @@ paths:
             $ref: '#/definitions/set'
       responses:
         "200":
-          $ref: '#/responses/set'
+          $ref: '#/responses/success'
         '400':
           $ref: '#/responses/error'
 
@@ -162,6 +162,7 @@ definitions:
     type: string
     minLength: 1
     pattern: '^[a-zA-Z0-9_\-\.]+$'
+
   wordOrRegex:
     type: string
     minLength: 1
@@ -220,6 +221,3 @@ definitions:
         description: PQL Query
         type: string
         minLength: 1
-      node_set:
-        $ref: '#/definitions/word'
-

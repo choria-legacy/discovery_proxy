@@ -30,9 +30,6 @@ type DiscoveryRequest struct {
 	// identities
 	Identities IdentitiesFilter `json:"identities"`
 
-	// node set
-	NodeSet Word `json:"node_set,omitempty"`
-
 	// PQL Query
 	// Min Length: 1
 	Query string `json:"query,omitempty"`
@@ -43,11 +40,6 @@ func (m *DiscoveryRequest) Validate(formats strfmt.Registry) error {
 	var res []error
 
 	if err := m.validateCollective(formats); err != nil {
-		// prop
-		res = append(res, err)
-	}
-
-	if err := m.validateNodeSet(formats); err != nil {
 		// prop
 		res = append(res, err)
 	}
@@ -72,22 +64,6 @@ func (m *DiscoveryRequest) validateCollective(formats strfmt.Registry) error {
 	if err := m.Collective.Validate(formats); err != nil {
 		if ve, ok := err.(*errors.Validation); ok {
 			return ve.ValidateName("collective")
-		}
-		return err
-	}
-
-	return nil
-}
-
-func (m *DiscoveryRequest) validateNodeSet(formats strfmt.Registry) error {
-
-	if swag.IsZero(m.NodeSet) { // not required
-		return nil
-	}
-
-	if err := m.NodeSet.Validate(formats); err != nil {
-		if ve, ok := err.(*errors.Validation); ok {
-			return ve.ValidateName("node_set")
 		}
 		return err
 	}
