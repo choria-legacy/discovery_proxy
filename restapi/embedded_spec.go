@@ -78,7 +78,7 @@ func init() {
         ],
         "responses": {
           "200": {
-            "$ref": "#/responses/set"
+            "$ref": "#/responses/success"
           },
           "400": {
             "$ref": "#/responses/error"
@@ -136,7 +136,7 @@ func init() {
         ],
         "responses": {
           "200": {
-            "$ref": "#/responses/set"
+            "$ref": "#/responses/success"
           },
           "404": {
             "description": "Not found"
@@ -178,9 +178,6 @@ func init() {
         },
         "identities": {
           "$ref": "#/definitions/identitiesFilter"
-        },
-        "node_set": {
-          "$ref": "#/definitions/word"
         },
         "query": {
           "description": "PQL Query",

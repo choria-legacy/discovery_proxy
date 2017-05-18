@@ -26,7 +26,11 @@ type puppetDbResult struct {
 
 // Discover nodes against PuppetDB
 func (p PuppetDB) Discover(request *models.DiscoveryRequest) ([]string, error) {
-	query := p.parseMCollectiveQuery(request)
+	query, err := p.parseMCollectiveQuery(request)
+
+	if err != nil {
+		return []string{}, err
+	}
 
 	log.Debugf("Query: %s", query)
 
@@ -208,17 +212,29 @@ func (p PuppetDB) discoverAgents(agents models.AgentsFilter) string {
 	return ""
 }
 
+func resolveSet(setName string) (string, error) {
+	set := Sets{DB: db}
+	answer, err := set.GetSet(setName)
+
+	if err != nil {
+		return "", err
+	}
+
+	return *answer.Query, nil
+}
+
 // Create a PQL query string to find nodes with certain certnames
 //
 // A special identity like pql:<PQL QUERY> is accepted which will
 // perform custom PQL queries, these queries must return just certnames
-func (p PuppetDB) discoverIdentities(identities models.IdentitiesFilter) string {
+func (p PuppetDB) discoverIdentities(identities models.IdentitiesFilter) (string, error) {
 	if len(identities) == 0 {
-		return ""
+		return "", nil
 	}
 
 	var queries = make([]string, 0)
 	pqlRe := regexp.MustCompile(`^pql:\s*(.+)$`)
+	setRe := regexp.MustCompile(`^set:\s*([a-zA-Z0-9_\-\.]+)$`)
 	regexIdentRe := regexp.MustCompile(`^\/(.+)\/$`)
 
 	for _, i := range identities {
@@ -227,6 +243,18 @@ func (p PuppetDB) discoverIdentities(identities models.IdentitiesFilter) string 
 		if pqlRe.MatchString(identity) {
 			matches := pqlRe.FindStringSubmatch(identity)
 			queries = append(queries, fmt.Sprintf(`certname in %s`, matches[1]))
+		} else if setRe.MatchString(identity) {
+			matches := setRe.FindStringSubmatch(identity)
+
+			log.Infof("Resolving set %s", matches[1])
+			query, err := resolveSet(matches[1])
+
+			if err != nil {
+				return "", err
+			}
+
+			log.Debugf("%v", query)
+			queries = append(queries, query)
 		} else if regexIdentRe.MatchString(identity) {
 			matches := regexIdentRe.FindStringSubmatch(identity)
 			queries = append(queries, fmt.Sprintf(`certname ~ "%s"`, p.stringRegexi(matches[1])))
@@ -236,10 +264,10 @@ func (p PuppetDB) discoverIdentities(identities models.IdentitiesFilter) string 
 	}
 
 	if len(queries) > 0 {
-		return strings.Join(queries, " or ")
+		return strings.Join(queries, " or "), nil
 	}
 
-	return ""
+	return "", nil
 }
 
 // Creates a PQL querty string to find facts with MCollective operators supported and mapped
@@ -292,9 +320,9 @@ func (p PuppetDB) extractCertnames(discovered []byte) ([]string, error) {
 }
 
 // Parse the incoming MCollective discovery request and turns it into a PQL query
-func (p PuppetDB) parseMCollectiveQuery(query *models.DiscoveryRequest) string {
+func (p PuppetDB) parseMCollectiveQuery(query *models.DiscoveryRequest) (string, error) {
 	if query.Query != "" {
-		return (query.Query)
+		return (query.Query), nil
 	}
 
 	var queries []string
@@ -316,8 +344,14 @@ func (p PuppetDB) parseMCollectiveQuery(query *models.DiscoveryRequest) string {
 	}
 
 	if len(query.Identities) > 0 {
-		queries = append(queries, p.discoverIdentities(query.Identities))
+		query, err := p.discoverIdentities(query.Identities)
+
+		if err != nil {
+			return "", err
+		}
+
+		queries = append(queries, query)
 	}
 
-	return p.nodeQueryString(queries)
+	return p.nodeQueryString(queries), nil
 }

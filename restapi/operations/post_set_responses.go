@@ -14,7 +14,7 @@ import (
 // PostSetOKCode is the HTTP code returned for type PostSetOK
 const PostSetOKCode int = 200
 
-/*PostSetOK Node Set
+/*PostSetOK Basic successful request
 
 swagger:response postSetOK
 */
@@ -23,7 +23,7 @@ type PostSetOK struct {
 	/*
 	  In: Body
 	*/
-	Payload *models.Set `json:"body,omitempty"`
+	Payload *models.SuccessModel `json:"body,omitempty"`
 }
 
 // NewPostSetOK creates PostSetOK with default headers values
@@ -32,13 +32,13 @@ func NewPostSetOK() *PostSetOK {
 }
 
 // WithPayload adds the payload to the post set o k response
-func (o *PostSetOK) WithPayload(payload *models.Set) *PostSetOK {
+func (o *PostSetOK) WithPayload(payload *models.SuccessModel) *PostSetOK {
 	o.Payload = payload
 	return o
 }
 
 // SetPayload sets the payload to the post set o k response
-func (o *PostSetOK) SetPayload(payload *models.Set) {
+func (o *PostSetOK) SetPayload(payload *models.SuccessModel) {
 	o.Payload = payload
 }
 

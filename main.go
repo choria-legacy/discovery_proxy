@@ -35,7 +35,22 @@ func main() {
 func setupHandlers(api *operations.PdbproxyAPI) {
 	api.GetDiscoverHandler = operations.GetDiscoverHandlerFunc(
 		func(params operations.GetDiscoverParams) middleware.Responder {
-			return discovery.SwaggerDiscovery(params)
+			return discovery.Discover(params)
+		})
+
+	api.PostSetHandler = operations.PostSetHandlerFunc(
+		func(params operations.PostSetParams) middleware.Responder {
+			return discovery.UpdateSet(params)
+		})
+
+	api.DeleteSetSetHandler = operations.DeleteSetSetHandlerFunc(
+		func(params operations.DeleteSetSetParams) middleware.Responder {
+			return discovery.DeleteSet(params)
+		})
+
+	api.GetSetSetHandler = operations.GetSetSetHandlerFunc(
+		func(params operations.GetSetSetParams) middleware.Responder {
+			return discovery.GetSet(params)
 		})
 }
 
@@ -86,6 +101,7 @@ func configure() error {
 	kingpin.Flag("cert", "Public certificate file").OverrideDefaultFromEnvar("CERT").Required().ExistingFileVar(&config.Certificate)
 	kingpin.Flag("key", "Public key file").OverrideDefaultFromEnvar("KEY").Required().ExistingFileVar(&config.PrivateKey)
 	kingpin.Flag("logfile", "File to log to, STDOUT when not set").OverrideDefaultFromEnvar("LOGFILE").StringVar(&config.Logfile)
+	kingpin.Flag("db", "Path to the database file to write").OverrideDefaultFromEnvar("DB").Required().StringVar(&config.DBFile)
 
 	kingpin.Parse()
 
@@ -109,7 +125,9 @@ func configure() error {
 		log.SetLevel(log.InfoLevel)
 	}
 
-	discovery.SetConfig(config)
+	if err := discovery.SetConfig(config); err != nil {
+		os.Exit(1)
+	}
 
 	return nil
 }

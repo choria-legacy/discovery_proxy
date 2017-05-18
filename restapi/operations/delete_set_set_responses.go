@@ -14,7 +14,7 @@ import (
 // DeleteSetSetOKCode is the HTTP code returned for type DeleteSetSetOK
 const DeleteSetSetOKCode int = 200
 
-/*DeleteSetSetOK Node Set
+/*DeleteSetSetOK Basic successful request
 
 swagger:response deleteSetSetOK
 */
@@ -23,7 +23,7 @@ type DeleteSetSetOK struct {
 	/*
 	  In: Body
 	*/
-	Payload *models.Set `json:"body,omitempty"`
+	Payload *models.SuccessModel `json:"body,omitempty"`
 }
 
 // NewDeleteSetSetOK creates DeleteSetSetOK with default headers values
@@ -32,13 +32,13 @@ func NewDeleteSetSetOK() *DeleteSetSetOK {
 }
 
 // WithPayload adds the payload to the delete set set o k response
-func (o *DeleteSetSetOK) WithPayload(payload *models.Set) *DeleteSetSetOK {
+func (o *DeleteSetSetOK) WithPayload(payload *models.SuccessModel) *DeleteSetSetOK {
 	o.Payload = payload
 	return o
 }
 
 // SetPayload sets the payload to the delete set set o k response
-func (o *DeleteSetSetOK) SetPayload(payload *models.Set) {
+func (o *DeleteSetSetOK) SetPayload(payload *models.SuccessModel) {
 	o.Payload = payload
 }
 
