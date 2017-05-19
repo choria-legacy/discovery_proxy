@@ -96,3 +96,46 @@ func (o *PostSetBadRequest) WriteResponse(rw http.ResponseWriter, producer runti
 		}
 	}
 }
+
+// PostSetInternalServerErrorCode is the HTTP code returned for type PostSetInternalServerError
+const PostSetInternalServerErrorCode int = 500
+
+/*PostSetInternalServerError Standard Error Format
+
+swagger:response postSetInternalServerError
+*/
+type PostSetInternalServerError struct {
+
+	/*
+	  In: Body
+	*/
+	Payload *models.ErrorModel `json:"body,omitempty"`
+}
+
+// NewPostSetInternalServerError creates PostSetInternalServerError with default headers values
+func NewPostSetInternalServerError() *PostSetInternalServerError {
+	return &PostSetInternalServerError{}
+}
+
+// WithPayload adds the payload to the post set internal server error response
+func (o *PostSetInternalServerError) WithPayload(payload *models.ErrorModel) *PostSetInternalServerError {
+	o.Payload = payload
+	return o
+}
+
+// SetPayload sets the payload to the post set internal server error response
+func (o *PostSetInternalServerError) SetPayload(payload *models.ErrorModel) {
+	o.Payload = payload
+}
+
+// WriteResponse to the client
+func (o *PostSetInternalServerError) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
+
+	rw.WriteHeader(500)
+	if o.Payload != nil {
+		payload := o.Payload
+		if err := producer.Produce(rw, payload); err != nil {
+			panic(err) // let the recovery middleware deal with this
+		}
+	}
+}

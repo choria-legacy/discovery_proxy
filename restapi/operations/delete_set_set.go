@@ -29,7 +29,7 @@ func NewDeleteSetSet(ctx *middleware.Context, handler DeleteSetSetHandler) *Dele
 
 /*DeleteSetSet swagger:route DELETE /set/{set} deleteSetSet
 
-Deletes a set
+Delete a set
 
 */
 type DeleteSetSet struct {

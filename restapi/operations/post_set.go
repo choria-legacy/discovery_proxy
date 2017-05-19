@@ -29,7 +29,7 @@ func NewPostSet(ctx *middleware.Context, handler PostSetHandler) *PostSet {
 
 /*PostSet swagger:route POST /set postSet
 
-Create or Update the query or nodes for a set
+Create a new set
 
 */
 type PostSet struct {

@@ -26,6 +26,22 @@ func init() {
   },
   "basePath": "/v1",
   "paths": {
+    "/backup": {
+      "get": {
+        "produces": [
+          "application/octet-stream"
+        ],
+        "summary": "Produce a DB backup",
+        "responses": {
+          "200": {
+            "$ref": "#/responses/success"
+          },
+          "500": {
+            "$ref": "#/responses/error"
+          }
+        }
+      }
+    },
     "/discover": {
       "get": {
         "consumes": [
@@ -64,7 +80,7 @@ func init() {
         "produces": [
           "application/json"
         ],
-        "summary": "Create or Update the query or nodes for a set",
+        "summary": "Create a new set",
         "parameters": [
           {
             "description": "Node set to store",
@@ -81,6 +97,9 @@ func init() {
             "$ref": "#/responses/success"
           },
           "400": {
+            "$ref": "#/responses/error"
+          },
+          "500": {
             "$ref": "#/responses/error"
           }
         }
@@ -112,11 +131,49 @@ func init() {
           "200": {
             "$ref": "#/responses/set"
           },
-          "400": {
+          "404": {
+            "description": "Not found"
+          },
+          "500": {
             "$ref": "#/responses/error"
+          }
+        }
+      },
+      "put": {
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "appilcation/json"
+        ],
+        "summary": "Update a set",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "Node set to retrieve",
+            "name": "set",
+            "in": "path",
+            "required": true
+          },
+          {
+            "description": "Set Properties",
+            "name": "newSet",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/set"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/responses/success"
           },
           "404": {
             "description": "Not found"
+          },
+          "500": {
+            "$ref": "#/responses/error"
           }
         }
       },
@@ -124,11 +181,11 @@ func init() {
         "produces": [
           "application/json"
         ],
-        "summary": "Deletes a set",
+        "summary": "Delete a set",
         "parameters": [
           {
             "type": "string",
-            "description": "Node set to retrieve",
+            "description": "Node set to delete",
             "name": "set",
             "in": "path",
             "required": true
@@ -140,6 +197,25 @@ func init() {
           },
           "404": {
             "description": "Not found"
+          },
+          "500": {
+            "$ref": "#/responses/error"
+          }
+        }
+      }
+    },
+    "/sets": {
+      "get": {
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "summary": "Retrieve list of known sets",
+        "responses": {
+          "200": {
+            "$ref": "#/responses/sets"
           }
         }
       }
@@ -282,6 +358,12 @@ func init() {
         }
       }
     },
+    "sets": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/word"
+      }
+    },
     "successModel": {
       "type": "object",
       "properties": {
@@ -322,6 +404,12 @@ func init() {
       "description": "Node Set",
       "schema": {
         "$ref": "#/definitions/set"
+      }
+    },
+    "sets": {
+      "description": "Known Sets",
+      "schema": {
+        "$ref": "#/definitions/sets"
       }
     },
     "success": {

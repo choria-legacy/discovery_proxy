@@ -28,7 +28,7 @@ type DeleteSetSetParams struct {
 	// HTTP Request Object
 	HTTPRequest *http.Request
 
-	/*Node set to retrieve
+	/*Node set to delete
 	  Required: true
 	  In: path
 	*/
