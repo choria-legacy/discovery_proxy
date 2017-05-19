@@ -13,9 +13,9 @@ paths:
     get:
       summary: Perform a discovery request
       produces:
-        -   application/json
+        - application/json
       consumes:
-        -   application/json
+        - application/json
       parameters:
         - name: request
           in: body
@@ -28,11 +28,11 @@ paths:
           $ref: '#/responses/nodes'
         '400':
           $ref: '#/responses/error'
-  /set/{set}:
+  '/set/{set}':
     get:
       summary: Retrieves the query or nodes for a set
       produces:
-        -  application/json
+        - application/json
       parameters:
         - name: set
           in: path
@@ -45,36 +45,61 @@ paths:
           type: boolean
           default: false
       responses:
-        "200":
+        '200':
           $ref: '#/responses/set'
-        '400':
-          $ref: '#/responses/error'
         '404':
-          description: "Not found"
-
+          description: Not found
+        '500':
+          $ref: '#/responses/error'
     delete:
-      summary: Deletes a set
+      summary: Delete a set
       produces:
-        -   application/json
+        - application/json
+      parameters:
+        - name: set
+          in: path
+          description: Node set to delete
+          required: true
+          type: string
+      responses:
+        '200':
+          $ref: '#/responses/success'
+        '404':
+          description: Not found
+        '500':
+          $ref: '#/responses/error'
+    put:
+      summary: Update a set
+      produces:
+        - appilcation/json
+      consumes:
+        - application/json
       parameters:
         - name: set
           in: path
           description: Node set to retrieve
           required: true
           type: string
+        - name: newSet
+          in: body
+          description: Set Properties
+          required: true
+          schema:
+            $ref: '#/definitions/set'
       responses:
-        200:
+        '200':
           $ref: '#/responses/success'
-        404:
-          description: "Not found"
-
+        '404':
+          description: Not found
+        '500':
+          $ref: '#/responses/error'
   /set:
     post:
-      summary: Create or Update the query or nodes for a set
+      summary: Create a new set
       produces:
-        -   application/json
+        - application/json
       consumes:
-        -   application/json
+        - application/json
       parameters:
         - name: set
           in: body
@@ -83,12 +108,32 @@ paths:
           schema:
             $ref: '#/definitions/set'
       responses:
-        "200":
+        '200':
           $ref: '#/responses/success'
         '400':
           $ref: '#/responses/error'
-
-
+        '500':
+          $ref: '#/responses/error'
+  /sets:
+    get:
+      summary: Retrieve list of known sets
+      produces:
+        - application/json
+      consumes:
+        - application/json
+      responses:
+        '200':
+          $ref: '#/responses/sets'
+  /backup:
+    get:
+      summary: Produce a DB backup
+      produces:
+        - application/octet-stream
+      responses:
+        '200':
+          $ref: '#/responses/success'
+        '500':
+          $ref: '#/responses/error'
 responses:
   error:
     description: Standard Error Format
@@ -102,6 +147,10 @@ responses:
     description: Node Set
     schema:
       $ref: '#/definitions/set'
+  sets:
+    description: Known Sets
+    schema:
+      $ref: '#/definitions/sets'
   success:
     description: Basic successful request
     schema:
@@ -139,7 +188,6 @@ definitions:
         description: HTTP Status Code
       detail:
         type: string
-
   set:
     type: object
     required:
@@ -155,14 +203,16 @@ definitions:
         type: array
         items:
           type: string
-
+  sets:
+    type: array
+    items:
+      $ref: '#/definitions/word'
   collectiveFilter:
-    $ref: "#/definitions/word"
+    $ref: '#/definitions/word'
   word:
     type: string
     minLength: 1
     pattern: '^[a-zA-Z0-9_\-\.]+$'
-
   wordOrRegex:
     type: string
     minLength: 1
@@ -179,13 +229,13 @@ definitions:
       operator:
         type: string
         enum:
-          - "=="
-          - "=~"
-          - "!="
-          - ">="
-          - ">"
-          - "<="
-          - "<"
+          - ==
+          - =~
+          - '!='
+          - '>='
+          - '>'
+          - <=
+          - <
       value:
         $ref: '#/definitions/wordOrRegex'
   factsFilter:

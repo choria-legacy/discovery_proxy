@@ -74,3 +74,46 @@ func (o *DeleteSetSetNotFound) WriteResponse(rw http.ResponseWriter, producer ru
 
 	rw.WriteHeader(404)
 }
+
+// DeleteSetSetInternalServerErrorCode is the HTTP code returned for type DeleteSetSetInternalServerError
+const DeleteSetSetInternalServerErrorCode int = 500
+
+/*DeleteSetSetInternalServerError Standard Error Format
+
+swagger:response deleteSetSetInternalServerError
+*/
+type DeleteSetSetInternalServerError struct {
+
+	/*
+	  In: Body
+	*/
+	Payload *models.ErrorModel `json:"body,omitempty"`
+}
+
+// NewDeleteSetSetInternalServerError creates DeleteSetSetInternalServerError with default headers values
+func NewDeleteSetSetInternalServerError() *DeleteSetSetInternalServerError {
+	return &DeleteSetSetInternalServerError{}
+}
+
+// WithPayload adds the payload to the delete set set internal server error response
+func (o *DeleteSetSetInternalServerError) WithPayload(payload *models.ErrorModel) *DeleteSetSetInternalServerError {
+	o.Payload = payload
+	return o
+}
+
+// SetPayload sets the payload to the delete set set internal server error response
+func (o *DeleteSetSetInternalServerError) SetPayload(payload *models.ErrorModel) {
+	o.Payload = payload
+}
+
+// WriteResponse to the client
+func (o *DeleteSetSetInternalServerError) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
+
+	rw.WriteHeader(500)
+	if o.Payload != nil {
+		payload := o.Payload
+		if err := producer.Produce(rw, payload); err != nil {
+			panic(err) // let the recovery middleware deal with this
+		}
+	}
+}

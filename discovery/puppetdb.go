@@ -214,7 +214,7 @@ func (p PuppetDB) discoverAgents(agents models.AgentsFilter) string {
 
 func resolveSet(setName string) (string, error) {
 	set := Sets{DB: db}
-	answer, err := set.GetSet(setName)
+	answer, err := set.Get(setName)
 
 	if err != nil {
 		return "", err
