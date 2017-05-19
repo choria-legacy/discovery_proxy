@@ -3,19 +3,36 @@ package discovery
 import (
 	"encoding/json"
 	"errors"
+	"os"
 
-	log "github.com/Sirupsen/logrus"
 	"github.com/boltdb/bolt"
 	"github.com/choria-io/pdbproxy/models"
 )
 
+// Sets manages named saved queries
 type Sets struct {
 	DB *bolt.DB
 }
 
-func (s Sets) GetSet(setName string) (*models.Set, error) {
-	log.Infof("Retrieving set %s", setName)
+// Backup performs a backup to the given path
+func (s Sets) Backup(path *string) error {
+	file, err := os.Create(*path)
 
+	if err != nil {
+		return err
+	}
+
+	err = s.DB.View(func(tx *bolt.Tx) error {
+		_, err := tx.WriteTo(file)
+
+		return err
+	})
+
+	return err
+}
+
+// Get retrieves the definition for a set
+func (s Sets) Get(setName string) (*models.Set, error) {
 	set := models.Set{}
 
 	err := s.DB.View(func(tx *bolt.Tx) error {
@@ -35,9 +52,8 @@ func (s Sets) GetSet(setName string) (*models.Set, error) {
 	return &set, err
 }
 
+// Delete removes a set from the database
 func (s Sets) Delete(set string) error {
-	log.Info("Deleting set %s", set)
-
 	err := s.DB.Update(func(tx *bolt.Tx) error {
 		tx.CreateBucketIfNotExists([]byte("choria"))
 		b := tx.Bucket([]byte("choria"))
@@ -49,9 +65,8 @@ func (s Sets) Delete(set string) error {
 	return err
 }
 
+// Update updates or creates a set
 func (s Sets) Update(request *models.Set) error {
-	log.Infof("Updating set %s", request.Set)
-
 	err := s.DB.Update(func(tx *bolt.Tx) error {
 		tx.CreateBucketIfNotExists([]byte("choria"))
 		b := tx.Bucket([]byte("choria"))
@@ -67,4 +82,36 @@ func (s Sets) Update(request *models.Set) error {
 	})
 
 	return err
+}
+
+// Sets retrieve a list of known sets from the database
+func (s Sets) Sets() []models.Word {
+	var sets []models.Word
+
+	db.View(func(tx *bolt.Tx) error {
+		tx.CreateBucketIfNotExists([]byte("choria"))
+		b := tx.Bucket([]byte("choria"))
+		c := b.Cursor()
+
+		for k, v := c.First(); k != nil; k, v = c.Next() {
+			if v != nil {
+				sets = append(sets, models.Word(k))
+			}
+		}
+
+		return nil
+	})
+
+	return sets
+}
+
+// Exists determines if the set is known
+func (s Sets) Exists(setName string) bool {
+	set, _ := s.Get(setName)
+
+	if set.Set != "" {
+		return true
+	}
+
+	return false
 }

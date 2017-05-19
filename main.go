@@ -40,6 +40,11 @@ func setupHandlers(api *operations.PdbproxyAPI) {
 
 	api.PostSetHandler = operations.PostSetHandlerFunc(
 		func(params operations.PostSetParams) middleware.Responder {
+			return discovery.CreateSet(params)
+		})
+
+	api.PutSetSetHandler = operations.PutSetSetHandlerFunc(
+		func(params operations.PutSetSetParams) middleware.Responder {
 			return discovery.UpdateSet(params)
 		})
 
@@ -51,6 +56,16 @@ func setupHandlers(api *operations.PdbproxyAPI) {
 	api.GetSetSetHandler = operations.GetSetSetHandlerFunc(
 		func(params operations.GetSetSetParams) middleware.Responder {
 			return discovery.GetSet(params)
+		})
+
+	api.GetSetsHandler = operations.GetSetsHandlerFunc(
+		func(params operations.GetSetsParams) middleware.Responder {
+			return discovery.ListSets(params)
+		})
+
+	api.GetBackupHandler = operations.GetBackupHandlerFunc(
+		func(params operations.GetBackupParams) middleware.Responder {
+			return discovery.BackupSets(params)
 		})
 }
 
