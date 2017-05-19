@@ -16,6 +16,8 @@ API to do Choria Discovery via REST services
     Produces:
     - application/json
 
+    - application/octet-stream
+
 
 swagger:meta
 */

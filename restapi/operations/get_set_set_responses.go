@@ -54,49 +54,6 @@ func (o *GetSetSetOK) WriteResponse(rw http.ResponseWriter, producer runtime.Pro
 	}
 }
 
-// GetSetSetBadRequestCode is the HTTP code returned for type GetSetSetBadRequest
-const GetSetSetBadRequestCode int = 400
-
-/*GetSetSetBadRequest Standard Error Format
-
-swagger:response getSetSetBadRequest
-*/
-type GetSetSetBadRequest struct {
-
-	/*
-	  In: Body
-	*/
-	Payload *models.ErrorModel `json:"body,omitempty"`
-}
-
-// NewGetSetSetBadRequest creates GetSetSetBadRequest with default headers values
-func NewGetSetSetBadRequest() *GetSetSetBadRequest {
-	return &GetSetSetBadRequest{}
-}
-
-// WithPayload adds the payload to the get set set bad request response
-func (o *GetSetSetBadRequest) WithPayload(payload *models.ErrorModel) *GetSetSetBadRequest {
-	o.Payload = payload
-	return o
-}
-
-// SetPayload sets the payload to the get set set bad request response
-func (o *GetSetSetBadRequest) SetPayload(payload *models.ErrorModel) {
-	o.Payload = payload
-}
-
-// WriteResponse to the client
-func (o *GetSetSetBadRequest) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
-
-	rw.WriteHeader(400)
-	if o.Payload != nil {
-		payload := o.Payload
-		if err := producer.Produce(rw, payload); err != nil {
-			panic(err) // let the recovery middleware deal with this
-		}
-	}
-}
-
 // GetSetSetNotFoundCode is the HTTP code returned for type GetSetSetNotFound
 const GetSetSetNotFoundCode int = 404
 
@@ -116,4 +73,47 @@ func NewGetSetSetNotFound() *GetSetSetNotFound {
 func (o *GetSetSetNotFound) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
 
 	rw.WriteHeader(404)
+}
+
+// GetSetSetInternalServerErrorCode is the HTTP code returned for type GetSetSetInternalServerError
+const GetSetSetInternalServerErrorCode int = 500
+
+/*GetSetSetInternalServerError Standard Error Format
+
+swagger:response getSetSetInternalServerError
+*/
+type GetSetSetInternalServerError struct {
+
+	/*
+	  In: Body
+	*/
+	Payload *models.ErrorModel `json:"body,omitempty"`
+}
+
+// NewGetSetSetInternalServerError creates GetSetSetInternalServerError with default headers values
+func NewGetSetSetInternalServerError() *GetSetSetInternalServerError {
+	return &GetSetSetInternalServerError{}
+}
+
+// WithPayload adds the payload to the get set set internal server error response
+func (o *GetSetSetInternalServerError) WithPayload(payload *models.ErrorModel) *GetSetSetInternalServerError {
+	o.Payload = payload
+	return o
+}
+
+// SetPayload sets the payload to the get set set internal server error response
+func (o *GetSetSetInternalServerError) SetPayload(payload *models.ErrorModel) {
+	o.Payload = payload
+}
+
+// WriteResponse to the client
+func (o *GetSetSetInternalServerError) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
+
+	rw.WriteHeader(500)
+	if o.Payload != nil {
+		payload := o.Payload
+		if err := producer.Produce(rw, payload); err != nil {
+			panic(err) // let the recovery middleware deal with this
+		}
+	}
 }

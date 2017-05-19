@@ -29,8 +29,12 @@ func NewPdbproxyAPI(spec *loads.Document) *PdbproxyAPI {
 		ServeError:      errors.ServeError,
 		JSONConsumer:    runtime.JSONConsumer(),
 		JSONProducer:    runtime.JSONProducer(),
+		BinProducer:     runtime.ByteStreamProducer(),
 		DeleteSetSetHandler: DeleteSetSetHandlerFunc(func(params DeleteSetSetParams) middleware.Responder {
 			return middleware.NotImplemented("operation DeleteSetSet has not yet been implemented")
+		}),
+		GetBackupHandler: GetBackupHandlerFunc(func(params GetBackupParams) middleware.Responder {
+			return middleware.NotImplemented("operation GetBackup has not yet been implemented")
 		}),
 		GetDiscoverHandler: GetDiscoverHandlerFunc(func(params GetDiscoverParams) middleware.Responder {
 			return middleware.NotImplemented("operation GetDiscover has not yet been implemented")
@@ -38,8 +42,14 @@ func NewPdbproxyAPI(spec *loads.Document) *PdbproxyAPI {
 		GetSetSetHandler: GetSetSetHandlerFunc(func(params GetSetSetParams) middleware.Responder {
 			return middleware.NotImplemented("operation GetSetSet has not yet been implemented")
 		}),
+		GetSetsHandler: GetSetsHandlerFunc(func(params GetSetsParams) middleware.Responder {
+			return middleware.NotImplemented("operation GetSets has not yet been implemented")
+		}),
 		PostSetHandler: PostSetHandlerFunc(func(params PostSetParams) middleware.Responder {
 			return middleware.NotImplemented("operation PostSet has not yet been implemented")
+		}),
+		PutSetSetHandler: PutSetSetHandlerFunc(func(params PutSetSetParams) middleware.Responder {
+			return middleware.NotImplemented("operation PutSetSet has not yet been implemented")
 		}),
 	}
 }
@@ -58,15 +68,23 @@ type PdbproxyAPI struct {
 
 	// JSONProducer registers a producer for a "application/json" mime type
 	JSONProducer runtime.Producer
+	// BinProducer registers a producer for a "application/octet-stream" mime type
+	BinProducer runtime.Producer
 
 	// DeleteSetSetHandler sets the operation handler for the delete set set operation
 	DeleteSetSetHandler DeleteSetSetHandler
+	// GetBackupHandler sets the operation handler for the get backup operation
+	GetBackupHandler GetBackupHandler
 	// GetDiscoverHandler sets the operation handler for the get discover operation
 	GetDiscoverHandler GetDiscoverHandler
 	// GetSetSetHandler sets the operation handler for the get set set operation
 	GetSetSetHandler GetSetSetHandler
+	// GetSetsHandler sets the operation handler for the get sets operation
+	GetSetsHandler GetSetsHandler
 	// PostSetHandler sets the operation handler for the post set operation
 	PostSetHandler PostSetHandler
+	// PutSetSetHandler sets the operation handler for the put set set operation
+	PutSetSetHandler PutSetSetHandler
 
 	// ServeError is called when an error is received, there is a default handler
 	// but you can set your own with this
@@ -130,8 +148,16 @@ func (o *PdbproxyAPI) Validate() error {
 		unregistered = append(unregistered, "JSONProducer")
 	}
 
+	if o.BinProducer == nil {
+		unregistered = append(unregistered, "BinProducer")
+	}
+
 	if o.DeleteSetSetHandler == nil {
 		unregistered = append(unregistered, "DeleteSetSetHandler")
+	}
+
+	if o.GetBackupHandler == nil {
+		unregistered = append(unregistered, "GetBackupHandler")
 	}
 
 	if o.GetDiscoverHandler == nil {
@@ -142,8 +168,16 @@ func (o *PdbproxyAPI) Validate() error {
 		unregistered = append(unregistered, "GetSetSetHandler")
 	}
 
+	if o.GetSetsHandler == nil {
+		unregistered = append(unregistered, "GetSetsHandler")
+	}
+
 	if o.PostSetHandler == nil {
 		unregistered = append(unregistered, "PostSetHandler")
+	}
+
+	if o.PutSetSetHandler == nil {
+		unregistered = append(unregistered, "PutSetSetHandler")
 	}
 
 	if len(unregistered) > 0 {
@@ -191,6 +225,9 @@ func (o *PdbproxyAPI) ProducersFor(mediaTypes []string) map[string]runtime.Produ
 		case "application/json":
 			result["application/json"] = o.JSONProducer
 
+		case "application/octet-stream":
+			result["application/octet-stream"] = o.BinProducer
+
 		}
 	}
 	return result
@@ -237,6 +274,11 @@ func (o *PdbproxyAPI) initHandlerCache() {
 	if o.handlers["GET"] == nil {
 		o.handlers["GET"] = make(map[string]http.Handler)
 	}
+	o.handlers["GET"]["/backup"] = NewGetBackup(o.context, o.GetBackupHandler)
+
+	if o.handlers["GET"] == nil {
+		o.handlers["GET"] = make(map[string]http.Handler)
+	}
 	o.handlers["GET"]["/discover"] = NewGetDiscover(o.context, o.GetDiscoverHandler)
 
 	if o.handlers["GET"] == nil {
@@ -244,10 +286,20 @@ func (o *PdbproxyAPI) initHandlerCache() {
 	}
 	o.handlers["GET"]["/set/{set}"] = NewGetSetSet(o.context, o.GetSetSetHandler)
 
+	if o.handlers["GET"] == nil {
+		o.handlers["GET"] = make(map[string]http.Handler)
+	}
+	o.handlers["GET"]["/sets"] = NewGetSets(o.context, o.GetSetsHandler)
+
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
 	o.handlers["POST"]["/set"] = NewPostSet(o.context, o.PostSetHandler)
+
+	if o.handlers["PUT"] == nil {
+		o.handlers["PUT"] = make(map[string]http.Handler)
+	}
+	o.handlers["PUT"]["/set/{set}"] = NewPutSetSet(o.context, o.PutSetSetHandler)
 
 }
 

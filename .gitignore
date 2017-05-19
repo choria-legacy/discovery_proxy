@@ -4,3 +4,5 @@ nohup.out
 discover.json
 pdbproxy
 .vscode
+*.db
+*.bak
