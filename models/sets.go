@@ -9,29 +9,69 @@ import (
 	strfmt "github.com/go-openapi/strfmt"
 
 	"github.com/go-openapi/errors"
+	"github.com/go-openapi/swag"
 )
 
 // Sets sets
 // swagger:model sets
-type Sets []Word
+type Sets struct {
+
+	// HTTP Status Code
+	Code int64 `json:"code,omitempty"`
+
+	// sets
+	Sets []Word `json:"sets"`
+}
 
 // Validate validates this sets
-func (m Sets) Validate(formats strfmt.Registry) error {
+func (m *Sets) Validate(formats strfmt.Registry) error {
 	var res []error
 
-	for i := 0; i < len(m); i++ {
+	if err := m.validateSets(formats); err != nil {
+		// prop
+		res = append(res, err)
+	}
 
-		if err := m[i].Validate(formats); err != nil {
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (m *Sets) validateSets(formats strfmt.Registry) error {
+
+	if swag.IsZero(m.Sets) { // not required
+		return nil
+	}
+
+	for i := 0; i < len(m.Sets); i++ {
+
+		if err := m.Sets[i].Validate(formats); err != nil {
 			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName(strconv.Itoa(i))
+				return ve.ValidateName("sets" + "." + strconv.Itoa(i))
 			}
 			return err
 		}
 
 	}
 
-	if len(res) > 0 {
-		return errors.CompositeValidationError(res...)
+	return nil
+}
+
+// MarshalBinary interface implementation
+func (m *Sets) MarshalBinary() ([]byte, error) {
+	if m == nil {
+		return nil, nil
 	}
+	return swag.WriteJSON(m)
+}
+
+// UnmarshalBinary interface implementation
+func (m *Sets) UnmarshalBinary(b []byte) error {
+	var res Sets
+	if err := swag.ReadJSON(b, &res); err != nil {
+		return err
+	}
+	*m = res
 	return nil
 }

@@ -265,15 +265,15 @@ func init() {
     "discoverySuccessModel": {
       "type": "object",
       "properties": {
+        "code": {
+          "description": "HTTP Status Code",
+          "type": "integer"
+        },
         "nodes": {
           "type": "array",
           "items": {
             "type": "string"
           }
-        },
-        "status": {
-          "description": "HTTP Status Code",
-          "type": "integer"
         }
       },
       "additionalProperties": false
@@ -281,17 +281,13 @@ func init() {
     "errorModel": {
       "type": "object",
       "properties": {
-        "detail": {
-          "description": "Extra details about the error",
-          "type": "string"
+        "code": {
+          "description": "HTTP Status Code",
+          "type": "integer"
         },
         "message": {
           "description": "Short description of the problem",
           "type": "string"
-        },
-        "status": {
-          "description": "HTTP Status Code",
-          "type": "integer"
         }
       },
       "additionalProperties": false
@@ -359,20 +355,29 @@ func init() {
       }
     },
     "sets": {
-      "type": "array",
-      "items": {
-        "$ref": "#/definitions/word"
+      "type": "object",
+      "properties": {
+        "code": {
+          "description": "HTTP Status Code",
+          "type": "integer"
+        },
+        "sets": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/word"
+          }
+        }
       }
     },
     "successModel": {
       "type": "object",
       "properties": {
-        "detail": {
-          "type": "string"
-        },
-        "status": {
+        "code": {
           "description": "HTTP Status Code",
           "type": "integer"
+        },
+        "message": {
+          "type": "string"
         }
       }
     },

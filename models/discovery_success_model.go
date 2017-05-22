@@ -14,11 +14,11 @@ import (
 // swagger:model discoverySuccessModel
 type DiscoverySuccessModel struct {
 
+	// HTTP Status Code
+	Code int64 `json:"code,omitempty"`
+
 	// nodes
 	Nodes []string `json:"nodes"`
-
-	// HTTP Status Code
-	Status int64 `json:"status,omitempty"`
 }
 
 // Validate validates this discovery success model

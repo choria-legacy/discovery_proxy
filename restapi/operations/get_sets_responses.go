@@ -23,7 +23,7 @@ type GetSetsOK struct {
 	/*
 	  In: Body
 	*/
-	Payload models.Sets `json:"body,omitempty"`
+	Payload *models.Sets `json:"body,omitempty"`
 }
 
 // NewGetSetsOK creates GetSetsOK with default headers values
@@ -32,13 +32,13 @@ func NewGetSetsOK() *GetSetsOK {
 }
 
 // WithPayload adds the payload to the get sets o k response
-func (o *GetSetsOK) WithPayload(payload models.Sets) *GetSetsOK {
+func (o *GetSetsOK) WithPayload(payload *models.Sets) *GetSetsOK {
 	o.Payload = payload
 	return o
 }
 
 // SetPayload sets the payload to the get sets o k response
-func (o *GetSetsOK) SetPayload(payload models.Sets) {
+func (o *GetSetsOK) SetPayload(payload *models.Sets) {
 	o.Payload = payload
 }
 
@@ -46,13 +46,10 @@ func (o *GetSetsOK) SetPayload(payload models.Sets) {
 func (o *GetSetsOK) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
 
 	rw.WriteHeader(200)
-	payload := o.Payload
-	if payload == nil {
-		payload = make(models.Sets, 0, 50)
+	if o.Payload != nil {
+		payload := o.Payload
+		if err := producer.Produce(rw, payload); err != nil {
+			panic(err) // let the recovery middleware deal with this
+		}
 	}
-
-	if err := producer.Produce(rw, payload); err != nil {
-		panic(err) // let the recovery middleware deal with this
-	}
-
 }

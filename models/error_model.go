@@ -14,14 +14,11 @@ import (
 // swagger:model errorModel
 type ErrorModel struct {
 
-	// Extra details about the error
-	Detail string `json:"detail,omitempty"`
+	// HTTP Status Code
+	Code int64 `json:"code,omitempty"`
 
 	// Short description of the problem
 	Message string `json:"message,omitempty"`
-
-	// HTTP Status Code
-	Status int64 `json:"status,omitempty"`
 }
 
 // Validate validates this error model

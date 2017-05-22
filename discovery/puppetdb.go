@@ -17,6 +17,7 @@ import (
 	"github.com/choria-io/pdbproxy/models"
 )
 
+// PuppetDB based discovery helpers
 type PuppetDB struct{}
 
 type puppetDbResult struct {
