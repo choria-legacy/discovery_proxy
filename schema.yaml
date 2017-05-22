@@ -160,7 +160,7 @@ definitions:
     type: object
     additionalProperties: false
     properties:
-      status:
+      code:
         type: integer
         description: HTTP Status Code
       nodes:
@@ -171,22 +171,19 @@ definitions:
     type: object
     additionalProperties: false
     properties:
-      status:
+      code:
         type: integer
         description: HTTP Status Code
       message:
         type: string
         description: Short description of the problem
-      detail:
-        type: string
-        description: Extra details about the error
   successModel:
     type: object
     properties:
-      status:
+      code:
         type: integer
         description: HTTP Status Code
-      detail:
+      message:
         type: string
   set:
     type: object
@@ -204,9 +201,16 @@ definitions:
         items:
           type: string
   sets:
-    type: array
-    items:
-      $ref: '#/definitions/word'
+    type: object
+    properties:
+      code:
+        type: integer
+        description: HTTP Status Code
+      sets:
+        type: array
+        items:
+          $ref: '#/definitions/word'
+          
   collectiveFilter:
     $ref: '#/definitions/word'
   word:

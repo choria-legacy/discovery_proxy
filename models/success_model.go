@@ -14,11 +14,11 @@ import (
 // swagger:model successModel
 type SuccessModel struct {
 
-	// detail
-	Detail string `json:"detail,omitempty"`
-
 	// HTTP Status Code
-	Status int64 `json:"status,omitempty"`
+	Code int64 `json:"code,omitempty"`
+
+	// message
+	Message string `json:"message,omitempty"`
 }
 
 // Validate validates this success model
