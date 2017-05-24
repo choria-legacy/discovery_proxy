@@ -1,5 +1,5 @@
-hash: e81c28b85c9680e258ef745a625dcec75029080c34c1c5ac3842ce613642c0d9
-updated: 2017-05-22T10:44:01.123440009+02:00
+hash: 2fd77a198b227dc761d38320baf2dfbee56046baf174f110d1e2758af8328c9b
+updated: 2017-05-26T14:40:30.178283076+02:00
 imports:
 - name: github.com/alecthomas/template
   version: a0175ee3bccc567396460bf5acd36800cb10c49c
@@ -11,6 +11,8 @@ imports:
   version: 948702997351133e1cc5a1b5842313ca46deeb0d
 - name: github.com/boltdb/bolt
   version: 583e8937c61f1af6513608ccc75c97b6abdf4ff9
+- name: github.com/chzyer/readline
+  version: 62c6fe6193755f722b8b8788aa7357be55a50ff1
 - name: github.com/docker/go-units
   version: 0dadbb0345b35ec7ef35e228dabb8de89a65bf52
 - name: github.com/go-openapi/analysis
@@ -26,6 +28,7 @@ imports:
 - name: github.com/go-openapi/runtime
   version: 2e9e988df6c290425033bacd425e008950c96be6
   subpackages:
+  - client
   - flagext
   - middleware
   - middleware/denco
@@ -51,7 +54,7 @@ imports:
   - jlexer
   - jwriter
 - name: github.com/mitchellh/mapstructure
-  version: cc8532a8e9a55ea36402aa21efdf403a60d34096
+  version: d0303fe809921458f417bcf828397a65db30a7e4
 - name: github.com/PuerkitoBio/purell
   version: b938d81255b5473c57635324295cb0fe398c7a58
 - name: github.com/PuerkitoBio/urlesc
@@ -60,15 +63,21 @@ imports:
   version: ba1b36c82c5e05c4f912a88eab0dcd91a171688f
 - name: github.com/tylerb/graceful
   version: 4654dfbb6ad53cb5e27f37d99b02e16c1872fbbb
+- name: golang.org/x/crypto
+  version: 7e9105388ebff089b3f99f0ef676ea55a6da3a7e
+  subpackages:
+  - ssh/terminal
 - name: golang.org/x/net
-  version: 513929065c19401a1c7b76ecd942f9f86a0c061b
+  version: 445979b94b42a1f13fdf26e8bf839a566e9796f9
   subpackages:
   - context
+  - context/ctxhttp
   - idna
 - name: golang.org/x/sys
   version: dbc2be9168a660ef302e04b6ff6406de6f967473
   subpackages:
   - unix
+  - windows/registry
 - name: golang.org/x/text
   version: 19e51611da83d6be54ddafce4a4af510cb3e9ea4
   subpackages:

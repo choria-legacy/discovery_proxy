@@ -168,9 +168,7 @@ This is not really used by MCollective but it's handy.
 
 ```json
 {
-	"queries": [
-        "nodes {}"
-	]
+	"query": "nodes {}"
 }
 ```
 </details>

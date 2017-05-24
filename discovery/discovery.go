@@ -32,7 +32,7 @@ func SetConfig(c Config) error {
 	config = c
 
 	if err := openDB(); err != nil {
-		log.Fatalf("Could not open db %s: %s", config.DBFile, err.Error())
+		log.Fatal(err.Error())
 		return err
 	}
 
