@@ -33,10 +33,11 @@ func (s Sets) Backup(path *string) error {
 
 // Get retrieves the definition for a set
 func (s Sets) Get(setName string) (*models.Set, error) {
+	s.createBucket()
+
 	set := models.Set{}
 
 	err := s.DB.View(func(tx *bolt.Tx) error {
-		tx.CreateBucketIfNotExists([]byte("choria"))
 		b := tx.Bucket([]byte("choria"))
 		val := b.Get([]byte(setName))
 
@@ -54,8 +55,9 @@ func (s Sets) Get(setName string) (*models.Set, error) {
 
 // Delete removes a set from the database
 func (s Sets) Delete(set string) error {
+	s.createBucket()
+
 	err := s.DB.Update(func(tx *bolt.Tx) error {
-		tx.CreateBucketIfNotExists([]byte("choria"))
 		b := tx.Bucket([]byte("choria"))
 		err := b.Delete([]byte(set))
 
@@ -65,10 +67,20 @@ func (s Sets) Delete(set string) error {
 	return err
 }
 
+func (s Sets) createBucket() error {
+	err := s.DB.Update(func(tx *bolt.Tx) error {
+		_, err := tx.CreateBucketIfNotExists([]byte("choria"))
+		return err
+	})
+
+	return err
+}
+
 // Update updates or creates a set
 func (s Sets) Update(request *models.Set) error {
+	s.createBucket()
+
 	err := s.DB.Update(func(tx *bolt.Tx) error {
-		tx.CreateBucketIfNotExists([]byte("choria"))
 		b := tx.Bucket([]byte("choria"))
 
 		j, err := json.Marshal(request)
@@ -86,10 +98,11 @@ func (s Sets) Update(request *models.Set) error {
 
 // Sets retrieve a list of known sets from the database
 func (s Sets) Sets() []models.Word {
+	s.createBucket()
+
 	var sets []models.Word
 
 	db.View(func(tx *bolt.Tx) error {
-		tx.CreateBucketIfNotExists([]byte("choria"))
 		b := tx.Bucket([]byte("choria"))
 		c := b.Cursor()
 
