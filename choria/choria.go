@@ -6,6 +6,7 @@ import (
 	"errors"
 	"fmt"
 	"io/ioutil"
+	"net"
 	"net/http"
 	"os"
 	"os/exec"
@@ -15,6 +16,7 @@ import (
 
 	"github.com/go-openapi/strfmt"
 
+	log "github.com/Sirupsen/logrus"
 	apiclient "github.com/choria-io/pdbproxy/client"
 	httptransport "github.com/go-openapi/runtime/client"
 )
@@ -22,7 +24,7 @@ import (
 // Choria is a utilty encompasing mcollective and choria config and various utilities
 type Choria struct {
 	Config *MCollectiveConfig
-	Sets *Sets
+	Sets   *Sets
 }
 
 // Server is a representation of a network server host and port
@@ -47,8 +49,63 @@ func New(path string) (*Choria, error) {
 	return &c, nil
 }
 
+// TrySrvLookup will attempt to lookup a series of names returning the first found
+// if SRV lookups are disabled or nothing is found the default will be returned
+func (c *Choria) TrySrvLookup(names []string, defaultSrv Server) (Server, error) {
+	if !c.Config.Choria.UseSRVRecords {
+		return defaultSrv, nil
+	}
+
+	for _, q := range names {
+		a, err := c.QuerySrvRecords([]string{q})
+		if err == nil {
+			log.Infof("Found %s:%d from %s SRV lookups", a[0].Host, a[0].Port, strings.Join(names, ", "))
+
+			return a[0], nil
+		}
+	}
+
+	log.Debugf("Could not find SRV records for %s, returning defaults %s:%d", strings.Join(names, ", "), defaultSrv.Host, defaultSrv.Port)
+
+	return defaultSrv, nil
+}
+
+// QuerySrvRecords looks for SRV records within the right domain either
+// thanks to facter domain or the configured domain.
+//
+// If the config disables SRV then a error is returned.
+func (c *Choria) QuerySrvRecords(records []string) ([]Server, error) {
+	servers := []Server{}
+
+	if !c.Config.Choria.UseSRVRecords {
+		return servers, errors.New("SRV lookups are disabled in the configuration file")
+	}
+
+	domain, err := c.FacterDomain()
+	if err != nil {
+		return servers, err
+	}
+
+	for _, q := range records {
+		record := q + "." + domain
+		log.Debugf("Attempting SRV lookup for %s", record)
+
+		cname, addrs, err := net.LookupSRV(record, "", "")
+		if err != nil {
+			return servers, err
+		}
+
+		log.Debugf("Found %d SRV records for %s", len(addrs), cname)
+
+		for _, a := range addrs {
+			servers = append(servers, Server{Host: a.Target, Port: int(a.Port)})
+		}
+	}
+
+	return servers, nil
+}
+
 // DiscoveryServer is the server configured as a discovery proxy
-// TODO srv lookup
 func (c *Choria) DiscoveryServer() (Server, error) {
 	s := Server{
 		Host: c.Config.Choria.DiscoveryHost,
@@ -58,7 +115,10 @@ func (c *Choria) DiscoveryServer() (Server, error) {
 	if !c.ProxiedDiscovery() {
 		return s, errors.New("Proxy discovery is not enabled")
 	}
-	return s, nil
+
+	result, err := c.TrySrvLookup([]string{"_mcollective-discovery._tcp"}, s)
+
+	return result, err
 }
 
 // ProxiedDiscovery determines if a client is configured for proxied discover
@@ -148,6 +208,37 @@ func (c *Choria) PuppetSetting(setting string) (string, error) {
 	}
 
 	return strings.Replace(string(out), "\n", "", -1), nil
+}
+
+// FacterDomain determines the machines domain by querying facter. Returns "" when unknown
+func (c *Choria) FacterDomain() (string, error) {
+	cmd := c.FacterCmd()
+
+	if cmd == "" {
+		return "", errors.New("Could ont find your facter command")
+	}
+
+	out, err := exec.Command(cmd, "networking.domain").Output()
+	if err != nil {
+		return "", errors.New("Could not resolve the server domain via facter: " + err.Error())
+	}
+
+	return strings.Replace(string(out), "\n", "", -1), nil
+}
+
+// FacterCmd finds the path to facter using first AIO path then a `which` like command
+// TODO: windows support
+func (c *Choria) FacterCmd() string {
+	if _, err := os.Stat("/opt/puppetlabs/bin/facter"); err == nil {
+		return "/opt/puppetlabs/bin/facter"
+	}
+
+	path, err := exec.LookPath("facter")
+	if err != nil {
+		return ""
+	}
+
+	return path
 }
 
 // DiscoveryProxyClient is a client for the discovery REST service

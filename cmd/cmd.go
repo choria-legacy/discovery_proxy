@@ -53,6 +53,10 @@ func ParseCLI() error {
 func Run() error {
 	var err error
 
+	if debug {
+		log.SetLevel(log.DebugLevel)
+	}
+
 	// these are all runableCmd figure out how to stick them in cli.commands
 	// and do this by iteration
 	switch cli.command {
