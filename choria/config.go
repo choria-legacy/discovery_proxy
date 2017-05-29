@@ -3,7 +3,9 @@ package choria
 import (
 	"bufio"
 	"errors"
+	"io"
 	"os"
+	"path/filepath"
 	"reflect"
 	"regexp"
 	"strconv"
@@ -99,14 +101,22 @@ func NewConfig(path string) (*MCollectiveConfig, error) {
 	mcollective := newMcollective()
 
 	// TODO i think probably parse config can walk 'mcollective' recursively
-	err := parseConfig(path, mcollective, &mcollective.setOptions)
+	err := parseConfig(path, mcollective, "", &mcollective.setOptions)
 	if err != nil {
 		return nil, err
 	}
 
-	err = parseConfig(path, mcollective.Choria, &mcollective.setOptions)
+	err = parseConfig(path, mcollective.Choria, "", &mcollective.setOptions)
 	if err != nil {
 		return nil, err
+	}
+
+	choriaPConf := filepath.Join(filepath.Dir(path), "plugin.d", "choria.cfg")
+	if _, err := os.Stat(choriaPConf); err == nil {
+		err = parseConfig(choriaPConf, mcollective.Choria, "plugin.choria", &mcollective.setOptions)
+		if err != nil {
+			return nil, err
+		}
 	}
 
 	if mcollective.MainCollective == "" {
@@ -117,14 +127,20 @@ func NewConfig(path string) (*MCollectiveConfig, error) {
 }
 
 // parse a config file and fill in the given config structure based on its tags
-func parseConfig(path string, config interface{}, found *[]string) error {
+func parseConfig(path string, config interface{}, prefix string, found *[]string) error {
 	file, err := os.Open(path)
 	if err != nil {
 		return err
 	}
 	defer file.Close()
 
-	scanner := bufio.NewScanner(file)
+	parseConfigContents(file, config, prefix, found)
+
+	return nil
+}
+
+func parseConfigContents(content io.Reader, config interface{}, prefix string, found *[]string) {
+	scanner := bufio.NewScanner(content)
 	itemr := regexp.MustCompile(`(.+?)\s*=\s*(.+)`)
 	skipr := regexp.MustCompile(`^#|^$`)
 
@@ -134,14 +150,19 @@ func parseConfig(path string, config interface{}, found *[]string) error {
 		if !skipr.MatchString(line) {
 			if itemr.MatchString(line) {
 				matches := itemr.FindStringSubmatch(line)
-				setItemWithKey(config, matches[1], matches[2])
+				var key string
 
-				*found = append(*found, matches[1])
+				if prefix == "" {
+					key = matches[1]
+				} else {
+					key = prefix + "." + matches[1]
+				}
+
+				setItemWithKey(config, key, matches[2])
+				*found = append(*found, key)
 			}
 		}
 	}
-
-	return nil
 }
 
 func newMcollective() *MCollectiveConfig {
