@@ -12,6 +12,7 @@ import (
 	"strings"
 	"unicode"
 
+	log "github.com/Sirupsen/logrus"
 	"golang.org/x/crypto/ssh/terminal"
 )
 
@@ -121,6 +122,10 @@ func NewConfig(path string) (*MCollectiveConfig, error) {
 
 	if mcollective.MainCollective == "" {
 		mcollective.MainCollective = mcollective.Collectives[0]
+	}
+
+	if mcollective.LogLevel == "debug" {
+		log.SetLevel(log.DebugLevel)
 	}
 
 	return mcollective, nil
