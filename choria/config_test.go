@@ -21,12 +21,12 @@ func TestTag(t *testing.T) {
 func TestNewChoria(t *testing.T) {
 	c := newChoria()
 	assert.Equal(t, "puppet", c.DiscoveryHost)
-	assert.Equal(t, "8081", c.DiscoveryPort)
+	assert.Equal(t, 8081, c.DiscoveryPort)
 	assert.Equal(t, true, c.UseSRVRecords)
 }
 
 func TestParseConfig(t *testing.T) {
-	c, err := New("testdata/choria.cfg")
+	c, err := NewConfig("testdata/choria.cfg")
 
 	assert.NoError(t, err, "should not be error")
 	assert.Equal(t, "pdb.example.com", c.Choria.DiscoveryHost)
@@ -38,6 +38,7 @@ func TestParseConfig(t *testing.T) {
 	assert.Equal(t, 5, c.KeepLogs)
 	assert.Equal(t, []string{"/dir1", "/dir2", "/dir3", "/dir4"}, c.LibDir)
 	assert.Equal(t, []string{"one", "two"}, c.DefaultDiscoveryOptions)
+	assert.Equal(t, true, c.Choria.RandomizeMiddlewareHosts)
 }
 
 func TestSetDefaults(t *testing.T) {
