@@ -1,13 +1,14 @@
 package choria
 
 import (
+	"os"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
 )
 
 type tc struct {
-	KeyOne string `confkey:"test.one" default:"one"`
+	KeyOne string `confkey:"test.one" default:"one" environment:"ONE_OVERRIDE"`
 	KeyTwo string `confkey:"test.two" default:"two"`
 }
 
@@ -40,7 +41,6 @@ func TestParseConfig(t *testing.T) {
 	assert.Equal(t, []string{"one", "two"}, c.DefaultDiscoveryOptions)
 	assert.Equal(t, true, c.Choria.RandomizeMiddlewareHosts)
 }
-
 func TestSetDefaults(t *testing.T) {
 	data := tc{}
 	setDefaults(&data)
@@ -71,4 +71,16 @@ func TestSetItemWithKey(t *testing.T) {
 	setItemWithKey(&data, "test.one", "new value")
 	assert.Equal(t, data.KeyOne, "new value")
 	assert.Equal(t, data.KeyTwo, "")
+}
+
+func TestSetItemWithKeyEnvOverride(t *testing.T) {
+	data := tc{}
+
+	setItemWithKey(&data, "test.one", "new value")
+	assert.Equal(t, data.KeyOne, "new value")
+
+	os.Setenv("ONE_OVERRIDE", "OVERRIDE")
+	setItemWithKey(&data, "test.one", "new value")
+	assert.Equal(t, data.KeyOne, "OVERRIDE")
+
 }
