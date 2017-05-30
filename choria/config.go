@@ -27,11 +27,11 @@ type ChoriaPluginConfig struct {
 	DiscoveryHost             string   `confkey:"plugin.choria.discovery_host" default:"puppet"`
 	DiscoveryPort             int      `confkey:"plugin.choria.discovery_port" default:"8081"`
 	DiscoveryProxy            bool     `confkey:"plugin.choria.discovery_proxy" default:"false"`
-	NatsUser                  string   `confkey:"plugin.nats.user"` // TODO environment overrides
-	NatsPass                  string   `confkey:"plugin.nats.pass"` // TODO environment overrides
+	NatsUser                  string   `confkey:"plugin.nats.user" environment:"MCOLLECTIVE_NATS_USERNAME"`
+	NatsPass                  string   `confkey:"plugin.nats.pass" environment:"MCOLLECTIVE_NATS_PASSWORD"`
 	MiddlewareHosts           []string `confkey:"plugin.choria.middleware_hosts" type:"comma_split"`
 	FederationMiddlewareHosts []string `confkey:"plugin.choria.federation_middleware_hosts" type:"comma_split"`
-	FederationCollectives     []string `confkey:"plugin.choria.federation.collectives" type:"comma_split"`
+	FederationCollectives     []string `confkey:"plugin.choria.federation.collectives" type:"comma_split" environment:"CHORIA_FED_COLLECTIVE"`
 	RandomizeMiddlewareHosts  bool     `confkey:"plugin.choria.randomize_middleware_hosts" default:"false"`
 	StatsPort                 int      `configkey:"plugin.choria.stats_port"`
 	SSLDir                    string   `confkey:"plugin.choria.ssl_dir"` // TODO default AIO paths
@@ -193,6 +193,12 @@ func setItemWithKey(s interface{}, key string, value interface{}) error {
 	item, err := itemWithKey(s, key)
 	if err != nil {
 		return err
+	}
+
+	if t, ok := tag(s, item, "environment"); ok {
+		if v, ok := os.LookupEnv(t); ok {
+			value = v
+		}
 	}
 
 	field := reflect.ValueOf(s).Elem().FieldByName(item)
