@@ -34,7 +34,7 @@ type ChoriaPluginConfig struct {
 	FederationCollectives     []string `confkey:"plugin.choria.federation.collectives" type:"comma_split" environment:"CHORIA_FED_COLLECTIVE"`
 	RandomizeMiddlewareHosts  bool     `confkey:"plugin.choria.randomize_middleware_hosts" default:"false"`
 	StatsPort                 int      `configkey:"plugin.choria.stats_port"`
-	SSLDir                    string   `confkey:"plugin.choria.ssl_dir"` // TODO default AIO paths
+	SSLDir                    string   `confkey:"plugin.choria.ssl_dir"`
 	UseSRVRecords             bool     `confkey:"plugin.choria.use_srv" default:"true"`
 	SRVDomain                 string   `confkey:"plugin.choria.srv_domain"`
 }
@@ -47,7 +47,7 @@ type MCollectiveConfig struct {
 	RegistrationSplay         bool     `confkey:"registration_splay" default:"false"`
 	Collectives               []string `confkey:"collectives" type:"comma_split" default:"mcollective"`
 	MainCollective            string   `confkey:"main_collective"`
-	LogFile                   string   `confkey:"logfile"` // TODO default AIO paths
+	LogFile                   string   `confkey:"logfile"`
 	KeepLogs                  int      `confkey:"keeplogs" default:"5"`
 	MaxLogSize                int      `confkey:"max_log_size" default:"2097152"`
 	LogLevel                  string   `confkey:"loglevel" default:"info"` // TODO support enums
@@ -61,7 +61,7 @@ type MCollectiveConfig struct {
 	SecurityProvider          string   `confkey:"securityprovider" default:"psk" type:"title_string"`
 	FactSource                string   `confkey:"factsource" default:"yaml" type:"title_string"`
 	Connector                 string   `confkey:"connector" default:"nats" type:"title_string"`
-	ClassesFile               string   `confkey:"classesfile" default:"/var/lib/puppet/state/classes.txt"` // TODO AIO paths
+	ClassesFile               string   `confkey:"classesfile" default:"/opt/puppetlabs/puppet/cache/state/classes.txt"`
 	DiscoveryTimeout          int      `confkey:"discovery_timeout" default:"2"`
 	PublishTimeout            int      `confkey:"publish_timeout" default:"2"`
 	ConnectionTimeout         int      `confkey:"connection_timeout"`
@@ -87,6 +87,9 @@ type MCollectiveConfig struct {
 	Choria *ChoriaPluginConfig
 }
 
+// HasOption determines if a specific option was set from a config key.
+// The option given would be something like `plugin.choria.use_srv`
+// and true would indicate that it was set by config vs using defaults
 func (c *MCollectiveConfig) HasOption(option string) bool {
 	for _, i := range c.setOptions {
 		if i == option {
@@ -124,6 +127,7 @@ func NewConfig(path string) (*MCollectiveConfig, error) {
 		mcollective.MainCollective = mcollective.Collectives[0]
 	}
 
+	// TODO other loglevels, not needed for this project
 	if mcollective.LogLevel == "debug" {
 		log.SetLevel(log.DebugLevel)
 	}
@@ -203,7 +207,6 @@ func setItemWithKey(s interface{}, key string, value interface{}) error {
 
 	field := reflect.ValueOf(s).Elem().FieldByName(item)
 
-	// fmt.Println(field.Kind().String())
 	switch field.Kind() {
 	case reflect.Slice:
 		ptr := field.Addr().Interface().(*[]string)
