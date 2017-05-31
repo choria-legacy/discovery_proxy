@@ -203,7 +203,7 @@ func (a *Client) PutSetSet(params *PutSetSetParams) (*PutSetSetOK, error) {
 		ID:                 "PutSetSet",
 		Method:             "PUT",
 		PathPattern:        "/set/{set}",
-		ProducesMediaTypes: []string{"appilcation/json"},
+		ProducesMediaTypes: []string{"application/json"},
 		ConsumesMediaTypes: []string{"application/json"},
 		Schemes:            []string{"https"},
 		Params:             params,

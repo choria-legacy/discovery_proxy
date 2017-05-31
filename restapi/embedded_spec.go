@@ -144,7 +144,7 @@ func init() {
           "application/json"
         ],
         "produces": [
-          "appilcation/json"
+          "application/json"
         ],
         "summary": "Update a set",
         "parameters": [
