@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"sort"
+	"time"
 
 	apiclient "github.com/choria-io/pdbproxy/client"
 	"github.com/choria-io/pdbproxy/client/operations"
@@ -31,7 +32,7 @@ func NewSets(c *Choria) (*Sets, error) {
 }
 
 func (s *Sets) List(fn func(sets []string) error) error {
-	result, err := s.ProxyClient.Operations.GetSets(operations.NewGetSetsParams())
+	result, err := s.ProxyClient.Operations.GetSets(operations.NewGetSetsParamsWithTimeout(2 * time.Second))
 
 	if err != nil {
 		return err
@@ -46,7 +47,7 @@ func (s *Sets) List(fn func(sets []string) error) error {
 }
 
 func (s *Sets) Get(set *string, discover *bool, fn func(set *models.Set) error) error {
-	params := operations.NewGetSetSetParams()
+	params := operations.NewGetSetSetParamsWithTimeout(2 * time.Second)
 	params.Set = *set
 	params.Discover = discover
 
@@ -59,7 +60,7 @@ func (s *Sets) Get(set *string, discover *bool, fn func(set *models.Set) error) 
 }
 
 func (s *Sets) Rm(set *string) error {
-	params := operations.NewDeleteSetSetParams()
+	params := operations.NewDeleteSetSetParamsWithTimeout(2 * time.Second)
 	params.Set = *set
 
 	_, err := s.ProxyClient.Operations.DeleteSetSet(params)
@@ -68,7 +69,7 @@ func (s *Sets) Rm(set *string) error {
 }
 
 func (s *Sets) Create(set string, query string) error {
-	params := operations.NewPostSetParams()
+	params := operations.NewPostSetParamsWithTimeout(2 * time.Second)
 	params.Set = &models.Set{}
 	params.Set.Query = &query
 	params.Set.Set = models.Word(set)
@@ -79,7 +80,7 @@ func (s *Sets) Create(set string, query string) error {
 }
 
 func (s *Sets) Update(set string, query string) error {
-	params := operations.NewPutSetSetParams()
+	params := operations.NewPutSetSetParamsWithTimeout(2 * time.Second)
 	params.Set = set
 
 	params.NewSet = &models.Set{}
@@ -144,7 +145,7 @@ func (s *Sets) PrintNodes(nodes []string) {
 }
 
 func (s *Sets) ResolvePQL(pql string) ([]string, error) {
-	params := operations.NewGetDiscoverParams()
+	params := operations.NewGetDiscoverParamsWithTimeout(10 * time.Second)
 	params.Request = &models.DiscoveryRequest{}
 	params.Request.Query = pql
 

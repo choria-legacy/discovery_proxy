@@ -47,7 +47,7 @@ func TestDiscoverAgents(t *testing.T) {
 }
 
 func TestDiscoverIdentities(t *testing.T) {
-	pql := provider.discoverIdentities([]models.WordOrRegex{models.WordOrRegex("string"), models.WordOrRegex("/regex/"), models.WordOrRegex("pql: nodes[certname] { }")})
+	pql, _ := provider.discoverIdentities([]models.WordOrRegex{models.WordOrRegex("string"), models.WordOrRegex("/regex/"), models.WordOrRegex("pql: nodes[certname] { }")})
 	expected := `certname = "string" or certname ~ "[Rr][Ee][Gg][Ee][Xx]" or certname in nodes[certname] { }`
 
 	assert.Equal(t, expected, pql, "should be equal")
