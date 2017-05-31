@@ -71,7 +71,7 @@ paths:
     put:
       summary: Update a set
       produces:
-        - appilcation/json
+        - application/json
       consumes:
         - application/json
       parameters:
