@@ -8,3 +8,4 @@ pdbproxy
 *.bak
 vendor
 *.swp
+module/files/discovery_proxy*

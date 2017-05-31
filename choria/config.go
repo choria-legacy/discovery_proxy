@@ -25,7 +25,7 @@ type ChoriaPluginConfig struct {
 	PuppetDBHost              string   `confkey:"plugin.choria.puppetdb_host" default:"puppet"`
 	PuppetDBPort              int      `confkey:"plugin.choria.puppetdb_port" default:"8081"`
 	DiscoveryHost             string   `confkey:"plugin.choria.discovery_host" default:"puppet"`
-	DiscoveryPort             int      `confkey:"plugin.choria.discovery_port" default:"8081"`
+	DiscoveryPort             int      `confkey:"plugin.choria.discovery_port" default:"8085"`
 	DiscoveryProxy            bool     `confkey:"plugin.choria.discovery_proxy" default:"false"`
 	NatsUser                  string   `confkey:"plugin.nats.user" environment:"MCOLLECTIVE_NATS_USERNAME"`
 	NatsPass                  string   `confkey:"plugin.nats.pass" environment:"MCOLLECTIVE_NATS_PASSWORD"`
