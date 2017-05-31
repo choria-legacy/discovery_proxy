@@ -22,7 +22,7 @@ func TestTag(t *testing.T) {
 func TestNewChoria(t *testing.T) {
 	c := newChoria()
 	assert.Equal(t, "puppet", c.DiscoveryHost)
-	assert.Equal(t, 8081, c.DiscoveryPort)
+	assert.Equal(t, 8085, c.DiscoveryPort)
 	assert.Equal(t, true, c.UseSRVRecords)
 }
 

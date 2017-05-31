@@ -25,7 +25,7 @@ func (s *serverCommand) Setup() error {
 	s.Cmd = cli.app.Command("server", "Runs a Proxy Server")
 	s.Cmd.Flag("listen", "address to bind to for client requests").Short('l').Default("0.0.0.0").OverrideDefaultFromEnvar("LISTEN").StringVar(&s.config.Listen)
 	s.Cmd.Flag("port", "HTTP port to bind to for client requests").Short('p').Default("0").OverrideDefaultFromEnvar("PORT").IntVar(&s.config.Port)
-	s.Cmd.Flag("tlsport", "HTTPS port to bind to for client requests").Default("8081").OverrideDefaultFromEnvar("TLSPORT").IntVar(&s.config.TLSPort)
+	s.Cmd.Flag("tlsport", "HTTPS port to bind to for client requests").Default("8085").OverrideDefaultFromEnvar("TLSPORT").IntVar(&s.config.TLSPort)
 	s.Cmd.Flag("puppetdb-host", "PuppetDB host").Short('H').Default("puppet").OverrideDefaultFromEnvar("PUPPETDB_HOST").StringVar(&s.config.PuppetDBHost)
 	s.Cmd.Flag("puppetdb-port", "PuppetDB port").Short('P').Default("8081").OverrideDefaultFromEnvar("PUPPETDB_PORT").IntVar(&s.config.PuppetDBPort)
 	s.Cmd.Flag("ca", "Certificate Authority file").OverrideDefaultFromEnvar("CA").Required().ExistingFileVar(&s.config.Ca)
