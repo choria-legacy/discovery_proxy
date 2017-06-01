@@ -18,25 +18,36 @@ import (
 
 // ChoriaPluginConfig settings
 type ChoriaPluginConfig struct {
-	PuppetServerHost          string   `confkey:"plugin.choria.puppetserver_host" default:"puppet"`
-	PuppetServerPort          int      `confkey:"plugin.choria.puppetserver_port" default:"8140"`
-	PuppetCAHost              string   `confkey:"plugin.choria.puppetca_host" default:"puppet"`
-	PuppetCAPort              int      `confkey:"plugin.choria.puppetca_port" default:"8140"`
-	PuppetDBHost              string   `confkey:"plugin.choria.puppetdb_host" default:"puppet"`
-	PuppetDBPort              int      `confkey:"plugin.choria.puppetdb_port" default:"8081"`
-	DiscoveryHost             string   `confkey:"plugin.choria.discovery_host" default:"puppet"`
-	DiscoveryPort             int      `confkey:"plugin.choria.discovery_port" default:"8085"`
-	DiscoveryProxy            bool     `confkey:"plugin.choria.discovery_proxy" default:"false"`
+	PuppetServerHost string `confkey:"plugin.choria.puppetserver_host" default:"puppet"`
+	PuppetServerPort int    `confkey:"plugin.choria.puppetserver_port" default:"8140"`
+	PuppetCAHost     string `confkey:"plugin.choria.puppetca_host" default:"puppet"`
+	PuppetCAPort     int    `confkey:"plugin.choria.puppetca_port" default:"8140"`
+	PuppetDBHost     string `confkey:"plugin.choria.puppetdb_host" default:"puppet"`
+	PuppetDBPort     int    `confkey:"plugin.choria.puppetdb_port" default:"8081"`
+	SSLDir           string `confkey:"plugin.choria.ssl_dir"`
+	UseSRVRecords    bool   `confkey:"plugin.choria.use_srv" default:"true"`
+	SRVDomain        string `confkey:"plugin.choria.srv_domain"`
+
+	// discovery proxy
+	DiscoveryHost  string `confkey:"plugin.choria.discovery_host" default:"puppet"`
+	DiscoveryPort  int    `confkey:"plugin.choria.discovery_port" default:"8085"`
+	DiscoveryProxy bool   `confkey:"plugin.choria.discovery_proxy" default:"false"`
+
+	// federation
+	FederationCollectives []string `confkey:"plugin.choria.federation.collectives" type:"comma_split" environment:"CHORIA_FED_COLLECTIVE"`
+	StatsPort             int      `configkey:"plugin.choria.stats_port"`
+
+	// nats connector
 	NatsUser                  string   `confkey:"plugin.nats.user" environment:"MCOLLECTIVE_NATS_USERNAME"`
 	NatsPass                  string   `confkey:"plugin.nats.pass" environment:"MCOLLECTIVE_NATS_PASSWORD"`
 	MiddlewareHosts           []string `confkey:"plugin.choria.middleware_hosts" type:"comma_split"`
 	FederationMiddlewareHosts []string `confkey:"plugin.choria.federation_middleware_hosts" type:"comma_split"`
-	FederationCollectives     []string `confkey:"plugin.choria.federation.collectives" type:"comma_split" environment:"CHORIA_FED_COLLECTIVE"`
 	RandomizeMiddlewareHosts  bool     `confkey:"plugin.choria.randomize_middleware_hosts" default:"false"`
-	StatsPort                 int      `configkey:"plugin.choria.stats_port"`
-	SSLDir                    string   `confkey:"plugin.choria.ssl_dir"`
-	UseSRVRecords             bool     `confkey:"plugin.choria.use_srv" default:"true"`
-	SRVDomain                 string   `confkey:"plugin.choria.srv_domain"`
+
+	// security plugin
+	PrivilegedUsers   []string `confkey:"plugin.choria.security.privileged_users" type:"comma_split"`
+	CertnameWhitelist []string `confkey:"plugin.choria.security.certname_whitelist" type:"comma_split"`
+	Serializer        string   `confkey:"plugin.choria.security.serializer"`
 }
 
 // MCollectiveConfig represents MCollective configuration
