@@ -9,3 +9,4 @@ discovery_proxy
 vendor
 *.swp
 module/files/discovery_proxy*
+module/pkg
