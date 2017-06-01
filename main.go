@@ -4,7 +4,7 @@ import (
 	"log"
 	"os"
 
-	"github.com/choria-io/pdbproxy/cmd"
+	"github.com/choria-io/discovery_proxy/cmd"
 )
 
 func main() {

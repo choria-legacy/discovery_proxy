@@ -6,7 +6,7 @@ import (
 	"os"
 
 	"github.com/boltdb/bolt"
-	"github.com/choria-io/pdbproxy/models"
+	"github.com/choria-io/discovery_proxy/models"
 )
 
 // Sets manages named saved queries

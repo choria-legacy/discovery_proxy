@@ -4,8 +4,8 @@ import (
 	log "github.com/Sirupsen/logrus"
 
 	"github.com/boltdb/bolt"
-	"github.com/choria-io/pdbproxy/models"
-	"github.com/choria-io/pdbproxy/restapi/operations"
+	"github.com/choria-io/discovery_proxy/models"
+	"github.com/choria-io/discovery_proxy/restapi/operations"
 	"github.com/go-openapi/runtime/middleware"
 )
 

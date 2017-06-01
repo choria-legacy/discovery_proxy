@@ -15,8 +15,8 @@ Additionally it provides a way to store PQL queries and give them names.  You ca
 This proxy needs certificates signed by your Puppet CA, use `mco choria request_cert pdb_proxy.example` to create them.  They have to match your hostname.
 
 ```
-$ pdbproxy server --help
-usage: pdbproxy server --ca=CA --cert=CERT --key=KEY --db=DB [<flags>]
+$ discovery_proxy server --help
+usage: discovery_proxy server --ca=CA --cert=CERT --key=KEY --db=DB [<flags>]
 
 Runs a Proxy Server
 
@@ -49,13 +49,13 @@ In future other backends - probably consul - will be supported to allow this ser
 A client is included to create and edit sets, here's some of it in use:
 
 ```
-$ pdbproxy sets
+$ discovery_proxy sets
 Found 6 set(s)
 
    test                   test_set3              test_set4
    test_set5              test_set6              test_set7
 
-$ pdbproxy sets create mt_hosts
+$ discovery_proxy sets create mt_hosts
 Please enter a PQL query, you can scroll back for history and use normal shell editing short cuts:
 pql> inventory { facts.country = "mt" }
 Matched Nodes:
@@ -68,7 +68,7 @@ Matched Nodes:
 
 Do you want to store this query (y/n)> y
 
-$ pdbproxy set view mt_hosts
+$ discovery_proxy set view mt_hosts
 Details for the 'mt_hosts' set
 
 Query:
@@ -78,7 +78,7 @@ Query:
 
 Use --discover to view matching nodes
 
-$ pdbproxy sets view mt_hosts --discover
+$ discovery_proxy sets view mt_hosts --discover
 Details for the 'mt_hosts' set
 
 Query:
@@ -93,7 +93,7 @@ Matched Nodes:
    dev6.example.net           dev7.example.net           dev8.example.net
    dev9.example.net           nuc1.example.net           nuc2.example.net
 
-$ pdbproxy sets rm mt_hosts
+$ discovery_proxy sets rm mt_hosts
 Details for the 'mt_hosts' set
 
 Query:
@@ -116,5 +116,5 @@ Access to the HTTPS port is secured with your normal choria SSL certificate.
 
 ## API Format
 
-The API is defined in a Swagger API found in `schema.yaml` and can be previewed on the [Swagger UI](http://petstore.swagger.io/?url=https://raw.githubusercontent.com/choria-io/pdbproxy/master/schema.yaml).
+The API is defined in a Swagger API found in `schema.yaml` and can be previewed on the [Swagger UI](http://petstore.swagger.io/?url=https://raw.githubusercontent.com/choria-io/discovery_proxy/master/schema.yaml).
 

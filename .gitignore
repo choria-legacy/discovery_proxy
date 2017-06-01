@@ -2,7 +2,7 @@
 *.key
 nohup.out
 discover.json
-pdbproxy
+discovery_proxy
 .vscode
 *.db
 *.bak

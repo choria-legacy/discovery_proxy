@@ -5,9 +5,9 @@ import (
 
 	log "github.com/Sirupsen/logrus"
 
-	"github.com/choria-io/pdbproxy/discovery"
-	"github.com/choria-io/pdbproxy/restapi"
-	"github.com/choria-io/pdbproxy/restapi/operations"
+	"github.com/choria-io/discovery_proxy/discovery"
+	"github.com/choria-io/discovery_proxy/restapi"
+	"github.com/choria-io/discovery_proxy/restapi/operations"
 	"github.com/go-openapi/loads"
 	"github.com/go-openapi/runtime/middleware"
 	flags "github.com/jessevdk/go-flags"
@@ -82,7 +82,7 @@ func (s *serverCommand) server() (*restapi.Server, error) {
 		return nil, err
 	}
 
-	api := operations.NewPdbproxyAPI(swaggerSpec)
+	api := operations.NewDiscoveryProxyAPI(swaggerSpec)
 	api.Logger = log.Printf
 
 	server := restapi.NewServer(api)
@@ -105,7 +105,7 @@ func (s *serverCommand) server() (*restapi.Server, error) {
 	return server, nil
 }
 
-func setupHandlers(api *operations.PdbproxyAPI) {
+func setupHandlers(api *operations.DiscoveryProxyAPI) {
 	api.GetDiscoverHandler = operations.GetDiscoverHandlerFunc(
 		func(params operations.GetDiscoverParams) middleware.Responder {
 			return discovery.Discover(params)

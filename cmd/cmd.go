@@ -30,7 +30,7 @@ var cli = application{}
 var debug = false
 
 func ParseCLI() error {
-	cli.app = kingpin.New("pdbproxy", "Choria Discovery Proxy for PuppetDB")
+	cli.app = kingpin.New("discovery_proxy", "Choria Discovery Proxy for PuppetDB")
 	cli.app.Version(version)
 	cli.app.Author("R.I. Pienaar <rip@devco.net>")
 	cli.app.Flag("debug", "Enable debug logging").Short('d').BoolVar(&debug)

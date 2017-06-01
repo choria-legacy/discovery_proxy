@@ -6,15 +6,15 @@ import (
 	"sort"
 	"time"
 
-	apiclient "github.com/choria-io/pdbproxy/client"
-	"github.com/choria-io/pdbproxy/client/operations"
-	"github.com/choria-io/pdbproxy/models"
+	apiclient "github.com/choria-io/discovery_proxy/client"
+	"github.com/choria-io/discovery_proxy/client/operations"
+	"github.com/choria-io/discovery_proxy/models"
 	"github.com/chzyer/readline"
 )
 
 type Sets struct {
 	Choria      *Choria
-	ProxyClient *apiclient.Pdbproxy
+	ProxyClient *apiclient.DiscoveryProxy
 }
 
 func NewSets(c *Choria) (*Sets, error) {

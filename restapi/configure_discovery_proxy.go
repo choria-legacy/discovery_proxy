@@ -9,18 +9,18 @@ import (
 	middleware "github.com/go-openapi/runtime/middleware"
 	graceful "github.com/tylerb/graceful"
 
-	"github.com/choria-io/pdbproxy/restapi/operations"
+	"github.com/choria-io/discovery_proxy/restapi/operations"
 )
 
 // This file is safe to edit. Once it exists it will not be overwritten
 
-//go:generate swagger generate server --target ../gen --name pdbproxy --spec ../schema.yaml --exclude-main
+//go:generate swagger generate server --target .. --name discovery_proxy --spec ../schema.yaml
 
-func configureFlags(api *operations.PdbproxyAPI) {
+func configureFlags(api *operations.DiscoveryProxyAPI) {
 	// api.CommandLineOptionsGroups = []swag.CommandLineOptionsGroup{ ... }
 }
 
-func configureAPI(api *operations.PdbproxyAPI) http.Handler {
+func configureAPI(api *operations.DiscoveryProxyAPI) http.Handler {
 	// configure the api here
 	api.ServeError = errors.ServeError
 
@@ -34,8 +34,13 @@ func configureAPI(api *operations.PdbproxyAPI) http.Handler {
 
 	api.JSONProducer = runtime.JSONProducer()
 
+	api.BinProducer = runtime.ByteStreamProducer()
+
 	api.DeleteSetSetHandler = operations.DeleteSetSetHandlerFunc(func(params operations.DeleteSetSetParams) middleware.Responder {
 		return middleware.NotImplemented("operation .DeleteSetSet has not yet been implemented")
+	})
+	api.GetBackupHandler = operations.GetBackupHandlerFunc(func(params operations.GetBackupParams) middleware.Responder {
+		return middleware.NotImplemented("operation .GetBackup has not yet been implemented")
 	})
 	api.GetDiscoverHandler = operations.GetDiscoverHandlerFunc(func(params operations.GetDiscoverParams) middleware.Responder {
 		return middleware.NotImplemented("operation .GetDiscover has not yet been implemented")
@@ -43,8 +48,14 @@ func configureAPI(api *operations.PdbproxyAPI) http.Handler {
 	api.GetSetSetHandler = operations.GetSetSetHandlerFunc(func(params operations.GetSetSetParams) middleware.Responder {
 		return middleware.NotImplemented("operation .GetSetSet has not yet been implemented")
 	})
+	api.GetSetsHandler = operations.GetSetsHandlerFunc(func(params operations.GetSetsParams) middleware.Responder {
+		return middleware.NotImplemented("operation .GetSets has not yet been implemented")
+	})
 	api.PostSetHandler = operations.PostSetHandlerFunc(func(params operations.PostSetParams) middleware.Responder {
 		return middleware.NotImplemented("operation .PostSet has not yet been implemented")
+	})
+	api.PutSetSetHandler = operations.PutSetSetHandlerFunc(func(params operations.PutSetSetParams) middleware.Responder {
+		return middleware.NotImplemented("operation .PutSetSet has not yet been implemented")
 	})
 
 	api.ServerShutdown = func() {}

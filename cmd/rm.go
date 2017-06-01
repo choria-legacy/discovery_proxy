@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/choria-io/pdbproxy/choria"
+	"github.com/choria-io/discovery_proxy/choria"
 )
 
 type setsRmCommand struct {
