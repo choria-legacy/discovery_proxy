@@ -17,7 +17,7 @@ import (
 	"github.com/go-openapi/strfmt"
 
 	log "github.com/Sirupsen/logrus"
-	apiclient "github.com/choria-io/pdbproxy/client"
+	apiclient "github.com/choria-io/discovery_proxy/client"
 	httptransport "github.com/go-openapi/runtime/client"
 )
 
@@ -242,7 +242,7 @@ func (c *Choria) FacterCmd() string {
 }
 
 // DiscoveryProxyClient is a client for the discovery REST service
-func (c *Choria) DiscoveryProxyClient() (*apiclient.Pdbproxy, error) {
+func (c *Choria) DiscoveryProxyClient() (*apiclient.DiscoveryProxy, error) {
 	server, err := c.DiscoveryServer()
 	if err != nil {
 		return nil, err

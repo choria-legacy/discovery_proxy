@@ -11,7 +11,7 @@ import (
 
 	strfmt "github.com/go-openapi/strfmt"
 
-	"github.com/choria-io/pdbproxy/models"
+	"github.com/choria-io/discovery_proxy/models"
 )
 
 // DeleteSetSetReader is a Reader for the DeleteSetSet structure.

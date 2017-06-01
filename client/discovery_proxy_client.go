@@ -9,10 +9,10 @@ import (
 
 	strfmt "github.com/go-openapi/strfmt"
 
-	"github.com/choria-io/pdbproxy/client/operations"
+	"github.com/choria-io/discovery_proxy/client/operations"
 )
 
-// Default pdbproxy HTTP client.
+// Default discovery proxy HTTP client.
 var Default = NewHTTPClient(nil)
 
 const (
@@ -27,14 +27,14 @@ const (
 // DefaultSchemes are the default schemes found in Meta (info) section of spec file
 var DefaultSchemes = []string{"https"}
 
-// NewHTTPClient creates a new pdbproxy HTTP client.
-func NewHTTPClient(formats strfmt.Registry) *Pdbproxy {
+// NewHTTPClient creates a new discovery proxy HTTP client.
+func NewHTTPClient(formats strfmt.Registry) *DiscoveryProxy {
 	return NewHTTPClientWithConfig(formats, nil)
 }
 
-// NewHTTPClientWithConfig creates a new pdbproxy HTTP client,
+// NewHTTPClientWithConfig creates a new discovery proxy HTTP client,
 // using a customizable transport config.
-func NewHTTPClientWithConfig(formats strfmt.Registry, cfg *TransportConfig) *Pdbproxy {
+func NewHTTPClientWithConfig(formats strfmt.Registry, cfg *TransportConfig) *DiscoveryProxy {
 	// ensure nullable parameters have default
 	if formats == nil {
 		formats = strfmt.Default
@@ -48,9 +48,9 @@ func NewHTTPClientWithConfig(formats strfmt.Registry, cfg *TransportConfig) *Pdb
 	return New(transport, formats)
 }
 
-// New creates a new pdbproxy client
-func New(transport runtime.ClientTransport, formats strfmt.Registry) *Pdbproxy {
-	cli := new(Pdbproxy)
+// New creates a new discovery proxy client
+func New(transport runtime.ClientTransport, formats strfmt.Registry) *DiscoveryProxy {
+	cli := new(DiscoveryProxy)
 	cli.Transport = transport
 
 	cli.Operations = operations.New(transport, formats)
@@ -97,15 +97,15 @@ func (cfg *TransportConfig) WithSchemes(schemes []string) *TransportConfig {
 	return cfg
 }
 
-// Pdbproxy is a client for pdbproxy
-type Pdbproxy struct {
+// DiscoveryProxy is a client for discovery proxy
+type DiscoveryProxy struct {
 	Operations *operations.Client
 
 	Transport runtime.ClientTransport
 }
 
 // SetTransport changes the transport on the client and all its subresources
-func (c *Pdbproxy) SetTransport(transport runtime.ClientTransport) {
+func (c *DiscoveryProxy) SetTransport(transport runtime.ClientTransport) {
 	c.Transport = transport
 
 	c.Operations.SetTransport(transport)

@@ -8,7 +8,7 @@ import (
 
 	"github.com/go-openapi/runtime"
 
-	"github.com/choria-io/pdbproxy/models"
+	"github.com/choria-io/discovery_proxy/models"
 )
 
 // PutSetSetOKCode is the HTTP code returned for type PutSetSetOK

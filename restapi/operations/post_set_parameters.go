@@ -11,7 +11,7 @@ import (
 	"github.com/go-openapi/runtime"
 	"github.com/go-openapi/runtime/middleware"
 
-	"github.com/choria-io/pdbproxy/models"
+	"github.com/choria-io/discovery_proxy/models"
 )
 
 // NewPostSetParams creates a new PostSetParams object

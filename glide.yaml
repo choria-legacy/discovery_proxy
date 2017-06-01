@@ -1,4 +1,4 @@
-package: github.com/choria-io/pdbproxy
+package: github.com/choria-io/discovery_proxy
 import:
 - package: github.com/Sirupsen/logrus
   version: ~0.11.5

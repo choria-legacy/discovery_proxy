@@ -4,7 +4,7 @@ import (
 	"os"
 	"testing"
 
-	"github.com/choria-io/pdbproxy/models"
+	"github.com/choria-io/discovery_proxy/models"
 	"github.com/stretchr/testify/assert"
 )
 

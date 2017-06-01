@@ -17,9 +17,9 @@ import (
 	"github.com/go-openapi/swag"
 )
 
-// NewPdbproxyAPI creates a new Pdbproxy instance
-func NewPdbproxyAPI(spec *loads.Document) *PdbproxyAPI {
-	return &PdbproxyAPI{
+// NewDiscoveryProxyAPI creates a new DiscoveryProxy instance
+func NewDiscoveryProxyAPI(spec *loads.Document) *DiscoveryProxyAPI {
+	return &DiscoveryProxyAPI{
 		handlers:        make(map[string]map[string]http.Handler),
 		formats:         strfmt.Default,
 		defaultConsumes: "application/json",
@@ -54,8 +54,8 @@ func NewPdbproxyAPI(spec *loads.Document) *PdbproxyAPI {
 	}
 }
 
-/*PdbproxyAPI API to do Choria Discovery via REST services */
-type PdbproxyAPI struct {
+/*DiscoveryProxyAPI API to do Choria Discovery via REST services */
+type DiscoveryProxyAPI struct {
 	spec            *loads.Document
 	context         *middleware.Context
 	handlers        map[string]map[string]http.Handler
@@ -102,42 +102,42 @@ type PdbproxyAPI struct {
 }
 
 // SetDefaultProduces sets the default produces media type
-func (o *PdbproxyAPI) SetDefaultProduces(mediaType string) {
+func (o *DiscoveryProxyAPI) SetDefaultProduces(mediaType string) {
 	o.defaultProduces = mediaType
 }
 
 // SetDefaultConsumes returns the default consumes media type
-func (o *PdbproxyAPI) SetDefaultConsumes(mediaType string) {
+func (o *DiscoveryProxyAPI) SetDefaultConsumes(mediaType string) {
 	o.defaultConsumes = mediaType
 }
 
 // SetSpec sets a spec that will be served for the clients.
-func (o *PdbproxyAPI) SetSpec(spec *loads.Document) {
+func (o *DiscoveryProxyAPI) SetSpec(spec *loads.Document) {
 	o.spec = spec
 }
 
 // DefaultProduces returns the default produces media type
-func (o *PdbproxyAPI) DefaultProduces() string {
+func (o *DiscoveryProxyAPI) DefaultProduces() string {
 	return o.defaultProduces
 }
 
 // DefaultConsumes returns the default consumes media type
-func (o *PdbproxyAPI) DefaultConsumes() string {
+func (o *DiscoveryProxyAPI) DefaultConsumes() string {
 	return o.defaultConsumes
 }
 
 // Formats returns the registered string formats
-func (o *PdbproxyAPI) Formats() strfmt.Registry {
+func (o *DiscoveryProxyAPI) Formats() strfmt.Registry {
 	return o.formats
 }
 
 // RegisterFormat registers a custom format validator
-func (o *PdbproxyAPI) RegisterFormat(name string, format strfmt.Format, validator strfmt.Validator) {
+func (o *DiscoveryProxyAPI) RegisterFormat(name string, format strfmt.Format, validator strfmt.Validator) {
 	o.formats.Add(name, format, validator)
 }
 
-// Validate validates the registrations in the PdbproxyAPI
-func (o *PdbproxyAPI) Validate() error {
+// Validate validates the registrations in the DiscoveryProxyAPI
+func (o *DiscoveryProxyAPI) Validate() error {
 	var unregistered []string
 
 	if o.JSONConsumer == nil {
@@ -188,19 +188,19 @@ func (o *PdbproxyAPI) Validate() error {
 }
 
 // ServeErrorFor gets a error handler for a given operation id
-func (o *PdbproxyAPI) ServeErrorFor(operationID string) func(http.ResponseWriter, *http.Request, error) {
+func (o *DiscoveryProxyAPI) ServeErrorFor(operationID string) func(http.ResponseWriter, *http.Request, error) {
 	return o.ServeError
 }
 
 // AuthenticatorsFor gets the authenticators for the specified security schemes
-func (o *PdbproxyAPI) AuthenticatorsFor(schemes map[string]spec.SecurityScheme) map[string]runtime.Authenticator {
+func (o *DiscoveryProxyAPI) AuthenticatorsFor(schemes map[string]spec.SecurityScheme) map[string]runtime.Authenticator {
 
 	return nil
 
 }
 
 // ConsumersFor gets the consumers for the specified media types
-func (o *PdbproxyAPI) ConsumersFor(mediaTypes []string) map[string]runtime.Consumer {
+func (o *DiscoveryProxyAPI) ConsumersFor(mediaTypes []string) map[string]runtime.Consumer {
 
 	result := make(map[string]runtime.Consumer)
 	for _, mt := range mediaTypes {
@@ -216,7 +216,7 @@ func (o *PdbproxyAPI) ConsumersFor(mediaTypes []string) map[string]runtime.Consu
 }
 
 // ProducersFor gets the producers for the specified media types
-func (o *PdbproxyAPI) ProducersFor(mediaTypes []string) map[string]runtime.Producer {
+func (o *DiscoveryProxyAPI) ProducersFor(mediaTypes []string) map[string]runtime.Producer {
 
 	result := make(map[string]runtime.Producer)
 	for _, mt := range mediaTypes {
@@ -235,7 +235,7 @@ func (o *PdbproxyAPI) ProducersFor(mediaTypes []string) map[string]runtime.Produ
 }
 
 // HandlerFor gets a http.Handler for the provided operation method and path
-func (o *PdbproxyAPI) HandlerFor(method, path string) (http.Handler, bool) {
+func (o *DiscoveryProxyAPI) HandlerFor(method, path string) (http.Handler, bool) {
 	if o.handlers == nil {
 		return nil, false
 	}
@@ -250,8 +250,8 @@ func (o *PdbproxyAPI) HandlerFor(method, path string) (http.Handler, bool) {
 	return h, ok
 }
 
-// Context returns the middleware context for the pdbproxy API
-func (o *PdbproxyAPI) Context() *middleware.Context {
+// Context returns the middleware context for the discovery proxy API
+func (o *DiscoveryProxyAPI) Context() *middleware.Context {
 	if o.context == nil {
 		o.context = middleware.NewRoutableContext(o.spec, o, nil)
 	}
@@ -259,7 +259,7 @@ func (o *PdbproxyAPI) Context() *middleware.Context {
 	return o.context
 }
 
-func (o *PdbproxyAPI) initHandlerCache() {
+func (o *DiscoveryProxyAPI) initHandlerCache() {
 	o.Context() // don't care about the result, just that the initialization happened
 
 	if o.handlers == nil {
@@ -305,7 +305,7 @@ func (o *PdbproxyAPI) initHandlerCache() {
 
 // Serve creates a http handler to serve the API over HTTP
 // can be used directly in http.ListenAndServe(":8000", api.Serve(nil))
-func (o *PdbproxyAPI) Serve(builder middleware.Builder) http.Handler {
+func (o *DiscoveryProxyAPI) Serve(builder middleware.Builder) http.Handler {
 	o.Init()
 
 	if o.Middleware != nil {
@@ -315,7 +315,7 @@ func (o *PdbproxyAPI) Serve(builder middleware.Builder) http.Handler {
 }
 
 // Init allows you to just initialize the handler cache, you can then recompose the middelware as you see fit
-func (o *PdbproxyAPI) Init() {
+func (o *DiscoveryProxyAPI) Init() {
 	if len(o.handlers) == 0 {
 		o.initHandlerCache()
 	}
