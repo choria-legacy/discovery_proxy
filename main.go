@@ -1,9 +1,9 @@
 package main
 
 import (
-	"log"
 	"os"
 
+	log "github.com/Sirupsen/logrus"
 	"github.com/choria-io/discovery_proxy/cmd"
 )
 

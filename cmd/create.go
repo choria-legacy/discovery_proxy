@@ -5,6 +5,7 @@ import (
 	"os"
 
 	"github.com/choria-io/discovery_proxy/choria"
+	"github.com/choria-io/discovery_proxy/client"
 )
 
 type setsCreateCommand struct {
@@ -30,7 +31,7 @@ func (s *setsCreateCommand) Run() error {
 		return err
 	}
 
-	sets, err := choria.NewSets(c)
+	sets, err := client.NewSets(c)
 	if err != nil {
 		return err
 	}
@@ -79,7 +80,7 @@ func (s *setsCreateCommand) Run() error {
 	return nil
 }
 
-func (s *setsCreateCommand) resolveAndPrintPQL(pql string, sets *choria.Sets) error {
+func (s *setsCreateCommand) resolveAndPrintPQL(pql string, sets *client.Sets) error {
 	nodes, err := sets.ResolvePQL(pql)
 	if err != nil {
 		return err

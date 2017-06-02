@@ -14,17 +14,12 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/go-openapi/strfmt"
-
 	log "github.com/Sirupsen/logrus"
-	apiclient "github.com/choria-io/discovery_proxy/client"
-	httptransport "github.com/go-openapi/runtime/client"
 )
 
 // Choria is a utilty encompasing mcollective and choria config and various utilities
 type Choria struct {
 	Config *MCollectiveConfig
-	Sets   *Sets
 }
 
 // Server is a representation of a network server host and port
@@ -239,26 +234,6 @@ func (c *Choria) FacterCmd() string {
 	}
 
 	return path
-}
-
-// DiscoveryProxyClient is a client for the discovery REST service
-func (c *Choria) DiscoveryProxyClient() (*apiclient.DiscoveryProxy, error) {
-	server, err := c.DiscoveryServer()
-	if err != nil {
-		return nil, err
-	}
-
-	host := fmt.Sprintf("%s:%d", server.Host, server.Port)
-
-	context, err := c.SSLContext()
-	if err != nil {
-		return nil, err
-	}
-
-	http := &http.Client{Transport: context}
-	transport := httptransport.NewWithClient(host, apiclient.DefaultBasePath, apiclient.DefaultSchemes, http)
-
-	return apiclient.New(transport, strfmt.NewFormats()), nil
 }
 
 // SSLContext creates a SSL context loaded with our certs and ca
