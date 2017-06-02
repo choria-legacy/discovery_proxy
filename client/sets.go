@@ -1,4 +1,4 @@
-package choria
+package client
 
 import (
 	"errors"
@@ -6,27 +6,27 @@ import (
 	"sort"
 	"time"
 
-	apiclient "github.com/choria-io/discovery_proxy/client"
+	"github.com/choria-io/discovery_proxy/choria"
 	"github.com/choria-io/discovery_proxy/client/operations"
 	"github.com/choria-io/discovery_proxy/models"
 	"github.com/chzyer/readline"
 )
 
 type Sets struct {
-	Choria      *Choria
-	ProxyClient *apiclient.DiscoveryProxy
+	Choria      *choria.Choria
+	ProxyClient *DiscoveryProxy
 }
 
-func NewSets(c *Choria) (*Sets, error) {
+func NewSets(c *choria.Choria) (*Sets, error) {
 	set := Sets{}
 
-	client, err := c.DiscoveryProxyClient()
+	dclient, err := NewDiscoveryProxyClient(c)
 	if err != nil {
 		return &set, err
 	}
 
 	set.Choria = c
-	set.ProxyClient = client
+	set.ProxyClient = dclient
 
 	return &set, nil
 }
@@ -132,7 +132,7 @@ func (s *Sets) PrintSet(set *string, discover bool) error {
 func (s *Sets) PrintNodes(nodes []string) {
 	sort.Strings(nodes)
 
-	SliceGroups(nodes, 3, func(group []string) {
+	choria.SliceGroups(nodes, 3, func(group []string) {
 		width := readline.GetScreenWidth()/3 - 6
 
 		format := fmt.Sprintf("   %%-%ds", width)

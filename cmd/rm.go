@@ -5,6 +5,7 @@ import (
 	"os"
 
 	"github.com/choria-io/discovery_proxy/choria"
+	"github.com/choria-io/discovery_proxy/client"
 )
 
 type setsRmCommand struct {
@@ -28,7 +29,7 @@ func (s *setsRmCommand) Run() error {
 		return err
 	}
 
-	sets, err := choria.NewSets(c)
+	sets, err := client.NewSets(c)
 	if err != nil {
 		return err
 	}
