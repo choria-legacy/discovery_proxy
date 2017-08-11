@@ -69,7 +69,7 @@ func TestDiscoverFacts(t *testing.T) {
 	}
 
 	pql := provider.discoverFacts(facts)
-	expected := `facts {name = "re" and value ~ "[Rr][Ee][Vv][Aa][Ll][Uu][Ee]"} and facts {name = "eq" and value = "eqvalue"} and facts {name = "ne" and !(value = "nevalue")} and facts {name = "ge" and value >= 1} and facts {name = "lt" and value <= "ltvalue"}`
+	expected := `inventory {facts.re ~ "[Rr][Ee][Vv][Aa][Ll][Uu][Ee]"} and inventory {facts.eq = "eqvalue"} and inventory {!(facts.ne = "nevalue")} and inventory {facts.ge >= 1}`
 
 	assert.Equal(t, expected, pql, "should be equal")
 }

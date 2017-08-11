@@ -13,8 +13,8 @@ import (
 	"regexp"
 	"strings"
 
-	log "github.com/Sirupsen/logrus"
 	"github.com/choria-io/discovery_proxy/models"
+	log "github.com/sirupsen/logrus"
 )
 
 // PuppetDB based discovery helpers
@@ -280,17 +280,18 @@ func (p PuppetDB) discoverFacts(facts models.FactsFilter) string {
 
 		switch *fact.Operator {
 		case "=~":
-			queries = append(queries, fmt.Sprintf(`facts {name = "%s" and value ~ "%s"}`, fact.Fact, p.stringRegexi(value)))
+			queries = append(queries, fmt.Sprintf(`inventory {facts.%s ~ "%s"}`, fact.Fact, p.stringRegexi(value)))
 		case "==":
-			queries = append(queries, fmt.Sprintf(`facts {name = "%s" and value = "%s"}`, fact.Fact, value))
+			queries = append(queries, fmt.Sprintf(`inventory {facts.%s = "%s"}`, fact.Fact, value))
 		case "!=":
-			queries = append(queries, fmt.Sprintf(`facts {name = "%s" and !(value = "%s")}`, fact.Fact, value))
+			queries = append(queries, fmt.Sprintf(`inventory {!(facts.%s = "%s")}`, fact.Fact, value))
 		case ">=", ">", "<=", "<":
-			if regexp.MustCompile(`^\d+$`).MatchString(value) {
-				queries = append(queries, fmt.Sprintf(`facts {name = "%s" and value %s %s}`, fact.Fact, *fact.Operator, value))
-			} else {
-				queries = append(queries, fmt.Sprintf(`facts {name = "%s" and value %s "%s"}`, fact.Fact, *fact.Operator, value))
+			if !regexp.MustCompile(`^\d+$`).MatchString(value) {
+				log.Warnf("Cannot perform a %s query using string data on PuppetDB", *fact.Operator)
+				break
 			}
+
+			queries = append(queries, fmt.Sprintf(`inventory {facts.%s %s %s}`, fact.Fact, *fact.Operator, value))
 		}
 	}
 
