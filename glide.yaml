@@ -1,6 +1,6 @@
 package: github.com/choria-io/discovery_proxy
 import:
-- package: github.com/Sirupsen/logrus
+- package: github.com/sirupsen/logrus
   version: ~0.11.5
 - package: github.com/boltdb/bolt
   version: ~1.3.0

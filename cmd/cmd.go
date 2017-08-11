@@ -6,7 +6,7 @@ import (
 	"os/user"
 	"path/filepath"
 
-	log "github.com/Sirupsen/logrus"
+	log "github.com/sirupsen/logrus"
 	"github.com/chzyer/readline"
 
 	kingpin "gopkg.in/alecthomas/kingpin.v2"

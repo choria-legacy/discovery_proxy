@@ -1,7 +1,7 @@
 package discovery
 
 import (
-	log "github.com/Sirupsen/logrus"
+	log "github.com/sirupsen/logrus"
 
 	"github.com/boltdb/bolt"
 	"github.com/choria-io/discovery_proxy/models"

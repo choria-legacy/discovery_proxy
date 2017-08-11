@@ -3,7 +3,7 @@ package cmd
 import (
 	"os"
 
-	log "github.com/Sirupsen/logrus"
+	log "github.com/sirupsen/logrus"
 
 	"github.com/choria-io/discovery_proxy/discovery"
 	"github.com/choria-io/discovery_proxy/restapi"
