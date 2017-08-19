@@ -1,6 +1,6 @@
 {
   "name": "choria-discovery_proxy",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "author": "choria",
   "summary": "Choria.io Discovery Proxy",
   "license": "Apache-2.0",
