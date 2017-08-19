@@ -24,7 +24,7 @@ type application struct {
 	command    string
 }
 
-const version = "0.0.1"
+const version = "0.1.0"
 
 var cli = application{}
 var debug = false

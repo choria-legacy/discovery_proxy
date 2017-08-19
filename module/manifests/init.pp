@@ -12,7 +12,7 @@ class discovery_proxy (
     String $user = "root",
     String $group = "root",
     String $binpath = "/usr/bin/discovery_proxy",
-    String $binary_source = "puppet:///modules/discovery_proxy/discovery_proxy-0.0.1",
+    String $binary_source = "puppet:///modules/discovery_proxy/discovery_proxy-0.1.0",
     String $service_name = "discovery_proxy",
     Enum["running", "stopped"] $service_ensure = "running",
     String $db_dir = "/var/lib/choria",
